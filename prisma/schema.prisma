@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Celula {
+  id          String    @id @default(cuid())
+  nome        String
+  descricao   String?
+  lider       String?
+  horario     String?
+  local       String?
+  telefone    String?
+  ativo       Boolean   @default(true)
+  ordem       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Ministerio {
+  id          String    @id @default(cuid())
+  nome        String
+  descricao   String?
+  responsavel String?
+  imagem      String?
+  videoUrl    String?
+  conteudo    String?
+  ativo       Boolean   @default(true)
+  eventos     Evento[]
+  galeria     GaleriaMinisterio[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model GaleriaMinisterio {
+  id            String    @id @default(cuid())
+  tipo          String
+  url           String
+  titulo        String?
+  ministerioId  String
+  ministerio    Ministerio @relation(fields: [ministerioId], references: [id])
+  ordem         Int       @default(0)
+  createdAt     DateTime  @default(now())
+}
+
+model Evento {
+  id                     String            @id @default(cuid())
+  titulo                 String
+  descricao              String?
+  data                   DateTime
+  dataFim                DateTime?
+  horario                String?
+  local                  String?
+  imagem                 String?
+  valor                  Float?
+  inscricaoInicio        DateTime?
+  inscricaoFim           DateTime?
+  dataPlanejamentoInicio DateTime?
+  inscricoes             Inscricao[]
+  lotes                  LoteInscricao[]
+  ministerioId           String?
+  ministerio             Ministerio?       @relation(fields: [ministerioId], references: [id])
+  avaliacao              EventoAvaliacao?
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+}
+
+model LoteInscricao {
+  id         String      @id @default(cuid())
+  nome       String
+  valor      Float
+  quantidade Int
+  ordem      Int         @default(0)
+  eventoId   String
+  evento     Evento      @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+  inscricoes Inscricao[]
+}
+
+model Inscricao {
+  id          String    @id @default(cuid())
+  nome        String
+  email       String
+  telefone    String?
+  valor       Float
+  status      String    @default("pendente")
+  comprovante String?
+  loteId      String?
+  lote        LoteInscricao? @relation(fields: [loteId], references: [id])
+  eventoId    String
+  evento      Evento    @relation(fields: [eventoId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Devocional {
+  id          String    @id @default(cuid())
+  titulo      String
+  conteudo    String
+  autor       String?
+  imagem      String?
+  publicado   Boolean   @default(false)
+  publicadoEm DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Estudo {
+  id         String    @id @default(cuid())
+  titulo     String
+  descricao  String?
+  conteudo   String?
+  categoria  String?
+  ordem      Int       @default(0)
+  publicado  Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model PreGacao {
+  id         String    @id @default(cuid())
+  titulo     String
+  descricao  String?
+  urlYoutube String
+  data       DateTime?
+  pregador   String?
+  duracao    String?
+  thumbnail  String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model PedidoOracao {
+  id        String    @id @default(cuid())
+  nome      String
+  email     String?
+  telefone  String?
+  mensagem  String
+  aprovado  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model MensagemContato {
+  id         String    @id @default(cuid())
+  nome       String
+  email      String
+  telefone   String?
+  assunto    String
+  mensagem   String
+  resposta   String?
+  lida       Boolean   @default(false)
+  respondida Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model EventoAvaliacao {
+  id        String   @id @default(cuid())
+  eventoId  String   @unique
+  evento    Evento   @relation(fields: [eventoId], references: [id], onDelete: Cascade)
+  custo     Float?
+  receita   Float?
+  presenca  Int?
+  satisfacao Int?
+  pros      String?
+  contras   String?
+  melhorias String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SugestaoEvento {
+  id        String   @id @default(cuid())
+  titulo    String
+  categoria String
+  prioridade String
+  createdAt DateTime @default(now())
+}
+
+model Configuracao {
+  id        String    @id @default(cuid())
+  chave     String    @unique
+  valor     String
+  descricao String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Usuario {
+  id             String    @id @default(cuid())
+  nome           String
+  email          String    @unique
+  senha          String
+  role           String    @default("admin")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
