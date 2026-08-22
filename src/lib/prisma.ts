@@ -5,14 +5,12 @@ const isTurso = !!(
   process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
 )
 
-const config: Config = {
+const adapter = new PrismaLibSql({
   url: isTurso
     ? process.env.TURSO_DATABASE_URL!
     : (process.env.DATABASE_URL ?? 'file:./dev.db'),
   authToken: isTurso ? process.env.TURSO_AUTH_TOKEN! : undefined,
-}
-
-const adapter = new PrismaLibSql(config)
+})
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
