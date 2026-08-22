@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   description: 'Igreja Vida - Uma comunidade de fé, amor e esperança',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function RootLayout({ children }: LayoutProps<'/'>) {
   const cfg = await getConfigs(['instagram', 'youtube', 'telefone'])
 
