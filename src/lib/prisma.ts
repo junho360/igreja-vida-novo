@@ -1,7 +1,8 @@
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from '@/generated/prisma/client'
 
-const isTurso = !!(
+const isProduction = process.env.NODE_ENV === 'production'
+const hasTurso = !!(
   process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
 )
 
@@ -11,8 +12,12 @@ function getTursoUrl(): string {
 }
 
 const adapter = new PrismaLibSql({
-  url: isTurso ? getTursoUrl() : (process.env.DATABASE_URL ?? 'file:./dev.db'),
-  authToken: isTurso ? process.env.TURSO_AUTH_TOKEN! : undefined,
+  url:
+    isProduction && hasTurso
+      ? getTursoUrl()
+      : (process.env.DATABASE_URL ?? 'file:./dev.db'),
+  authToken:
+    isProduction && hasTurso ? process.env.TURSO_AUTH_TOKEN! : undefined,
 })
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
