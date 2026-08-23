@@ -44,18 +44,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async authorized({ auth, request }) {
-      const isLoggedIn = !!auth
       const pathname = request.nextUrl.pathname
       const isOnLoginPage = pathname === '/admin/login'
-      const isOnAdmin = pathname.startsWith('/admin') && !isOnLoginPage
-      if (isOnAdmin && !isLoggedIn) {
-        return Response.redirect(
-          new URL('/admin/login', request.nextUrl.origin)
-        )
-      }
-      if (isOnLoginPage && isLoggedIn) {
-        return Response.redirect(new URL('/admin', request.nextUrl.origin))
-      }
+      const isOnApi = pathname.startsWith('/api/')
+      if (isOnLoginPage || isOnApi) return true
+      const isOnAdmin = pathname.startsWith('/admin')
+      if (isOnAdmin && !auth) return false
       return true
     },
     async jwt({ token, user }) {
