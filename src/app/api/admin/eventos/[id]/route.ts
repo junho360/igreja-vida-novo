@@ -53,6 +53,7 @@ export async function PUT(
         ? new Date(body.dataPlanejamentoInicio)
         : null,
       ministerioId: body.ministerioId || null,
+      publicado: body.publicado === true || body.publicado === 'true',
     },
   })
 
