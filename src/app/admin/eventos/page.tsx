@@ -36,6 +36,9 @@ export default async function AdminEventosPage() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Status
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Publicado
+              </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
                 Ações
               </th>
@@ -89,6 +92,17 @@ export default async function AdminEventosPage() {
                     {status === 'futuro' && (
                       <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700">
                         Futuro
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    {e.publicado ? (
+                      <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                        Sim
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
+                        Não
                       </span>
                     )}
                   </td>

@@ -37,6 +37,7 @@ export async function POST(request: Request) {
         ? new Date(body.dataPlanejamentoInicio)
         : null,
       ministerioId: body.ministerioId || null,
+      publicado: body.publicado === true || body.publicado === 'true',
     },
   })
   return NextResponse.json(evento)

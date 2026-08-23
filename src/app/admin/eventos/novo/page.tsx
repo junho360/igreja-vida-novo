@@ -37,6 +37,7 @@ export default function NovoEventoPage() {
         inscricaoFim: form.get('inscricaoFim') || null,
         dataPlanejamentoInicio: form.get('dataPlanejamentoInicio') || null,
         ministerioId: form.get('ministerioId') || null,
+        publicado: form.get('publicado') === 'true',
       }),
     })
 
@@ -160,6 +161,22 @@ export default function NovoEventoPage() {
             defaultValue="0"
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
+        </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="publicado"
+            name="publicado"
+            value="true"
+            defaultChecked={false}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label
+            htmlFor="publicado"
+            className="ml-2 block text-sm text-gray-700"
+          >
+            Publicado
+          </label>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>

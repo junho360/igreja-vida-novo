@@ -8,6 +8,7 @@ export const metadata = { title: 'Eventos - Igreja Vida' }
 export default async function EventosPage() {
   const [eventos, cfg] = await Promise.all([
     prisma.evento.findMany({
+      where: { publicado: true },
       orderBy: { data: 'asc' },
       include: { ministerio: true },
     }),
