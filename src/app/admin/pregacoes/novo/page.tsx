@@ -24,6 +24,7 @@ export default function NovaPregacaoPage() {
         data: form.get('data'),
         pregador: form.get('pregador'),
         duracao: form.get('duracao'),
+        publicado: form.get('publicado') === 'true',
       }),
     })
 
@@ -134,6 +135,18 @@ export default function NovaPregacaoPage() {
             {error}
           </p>
         )}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="publicado"
+            name="publicado"
+            value="true"
+            className="rounded border-gray-300"
+          />
+          <label htmlFor="publicado" className="text-sm text-gray-700">
+            Publicado
+          </label>
+        </div>
         <div className="flex gap-3">
           <button
             type="submit"

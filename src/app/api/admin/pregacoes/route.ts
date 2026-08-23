@@ -18,7 +18,11 @@ export async function POST(request: Request) {
 
   const body = await request.json()
   const item = await prisma.preGacao.create({
-    data: { ...body, data: body.data ? new Date(body.data) : null },
+    data: {
+      ...body,
+      data: body.data ? new Date(body.data) : null,
+      publicado: body.publicado === true || body.publicado === 'true',
+    },
   })
   return NextResponse.json(item)
 }

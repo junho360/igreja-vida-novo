@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 
 export default async function PregacoesPage() {
   const pregacoes = await prisma.preGacao.findMany({
+    where: { publicado: true },
     orderBy: { data: 'desc' },
   })
 

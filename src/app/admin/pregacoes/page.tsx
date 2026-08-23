@@ -28,6 +28,9 @@ export default async function AdminPregacoesPage() {
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                 Data
               </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Publicado
+              </th>
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
                 Ações
               </th>
@@ -44,6 +47,17 @@ export default async function AdminPregacoesPage() {
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500">
                   {item.data?.toLocaleDateString('pt-BR') ?? '—'}
+                </td>
+                <td className="px-6 py-4 text-sm">
+                  {item.publicado ? (
+                    <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                      Sim
+                    </span>
+                  ) : (
+                    <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-500">
+                      Não
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-right text-sm">
                   <Link

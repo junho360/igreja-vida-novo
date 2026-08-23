@@ -17,6 +17,7 @@ export default function EditarPregacaoPage() {
     data: '',
     pregador: '',
     duracao: '',
+    publicado: false,
   })
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function EditarPregacaoPage() {
           data: dateStr,
           pregador: data.pregador ?? '',
           duracao: data.duracao ?? '',
+          publicado: data.publicado ?? false,
         })
         setLoading(false)
       })
@@ -56,6 +58,7 @@ export default function EditarPregacaoPage() {
         data: form.data
           ? new Date(form.data + 'T12:00:00').toISOString()
           : null,
+        publicado: form.publicado,
       }),
     })
 
@@ -173,6 +176,18 @@ export default function EditarPregacaoPage() {
             {error}
           </p>
         )}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="publicado"
+            checked={form.publicado}
+            onChange={(e) => setForm({ ...form, publicado: e.target.checked })}
+            className="rounded border-gray-300"
+          />
+          <label htmlFor="publicado" className="text-sm text-gray-700">
+            Publicado
+          </label>
+        </div>
         <div className="flex gap-3">
           <button
             type="submit"

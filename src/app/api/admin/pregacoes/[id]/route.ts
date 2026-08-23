@@ -26,7 +26,11 @@ export async function PUT(
 
   const { id } = await params
   const body = await request.json()
-  const data = { ...body, data: body.data ? new Date(body.data) : undefined }
+  const data = {
+    ...body,
+    data: body.data ? new Date(body.data) : undefined,
+    publicado: body.publicado === true || body.publicado === 'true',
+  }
   const item = await prisma.preGacao.update({ where: { id }, data })
   return NextResponse.json(item)
 }
