@@ -57,6 +57,7 @@ model Evento {
   local                  String?
   imagem                 String?
   valor                  Float?
+  publicado              Boolean           @default(false)
   inscricaoInicio        DateTime?
   inscricaoFim           DateTime?
   dataPlanejamentoInicio DateTime?
