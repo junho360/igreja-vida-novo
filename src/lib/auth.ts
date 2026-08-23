@@ -45,11 +45,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async authorized({ auth, request }) {
       const isLoggedIn = !!auth
-      const isOnAdmin = request.nextUrl.pathname.startsWith('/admin')
+      const pathname = request.nextUrl.pathname
+      const isOnLoginPage = pathname === '/admin/login'
+      const isOnAdmin = pathname.startsWith('/admin') && !isOnLoginPage
       if (isOnAdmin && !isLoggedIn) {
         return Response.redirect(
           new URL('/admin/login', request.nextUrl.origin)
         )
+      }
+      if (isOnLoginPage && isLoggedIn) {
+        return Response.redirect(new URL('/admin', request.nextUrl.origin))
       }
       return true
     },
