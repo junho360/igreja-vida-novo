@@ -10,10 +10,16 @@ export async function GET() {
     ? 'SET (len=' + process.env.TURSO_AUTH_TOKEN.length + ')'
     : 'NOT SET'
 
+  const httpsUrl = (process.env.TURSO_DATABASE_URL || '').replace(
+    'libsql://',
+    'https://'
+  )
+  info.httpsUrl = httpsUrl || 'N/A'
+
   try {
     const { createClient } = await import('@libsql/client')
     const client = createClient({
-      url: process.env.TURSO_DATABASE_URL!,
+      url: httpsUrl,
       authToken: process.env.TURSO_AUTH_TOKEN!,
     })
     const result = await client.execute('SELECT 1 as test')

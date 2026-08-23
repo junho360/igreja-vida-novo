@@ -5,10 +5,13 @@ const isTurso = !!(
   process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN
 )
 
+function getTursoUrl(): string {
+  const url = process.env.TURSO_DATABASE_URL!
+  return url.replace('libsql://', 'https://')
+}
+
 const adapter = new PrismaLibSql({
-  url: isTurso
-    ? process.env.TURSO_DATABASE_URL!
-    : (process.env.DATABASE_URL ?? 'file:./dev.db'),
+  url: isTurso ? getTursoUrl() : (process.env.DATABASE_URL ?? 'file:./dev.db'),
   authToken: isTurso ? process.env.TURSO_AUTH_TOKEN! : undefined,
 })
 
