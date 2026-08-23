@@ -8,6 +8,7 @@ const menuItems = [
   { href: '/admin/estudos', label: 'Estudos' },
   { href: '/admin/pregacoes', label: 'Pregações' },
   { href: '/admin/celulas', label: 'Células' },
+  { href: '/admin/destaques', label: 'Destaques' },
   { href: '/admin/inscricoes', label: 'Inscrições' },
   { href: '/admin/configuracoes', label: 'Configurações' },
   { href: '/admin/pedidos-oracao', label: 'Pedidos de Oração' },
