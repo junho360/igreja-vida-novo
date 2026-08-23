@@ -9,6 +9,7 @@ export default function EditarCelulaPage() {
   const id = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     nome: '',
     descricao: '',
@@ -22,7 +23,10 @@ export default function EditarCelulaPage() {
 
   useEffect(() => {
     fetch(`/api/admin/celulas/${id}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Erro ao carregar dados')
+        return r.json()
+      })
       .then((data) => {
         setForm({
           nome: data.nome ?? '',
@@ -36,17 +40,27 @@ export default function EditarCelulaPage() {
         })
         setLoading(false)
       })
+      .catch(() => {
+        setError('Erro ao carregar dados')
+        setLoading(false)
+      })
   }, [id])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSaving(true)
 
-    await fetch(`/api/admin/celulas/${id}`, {
+    const res = await fetch(`/api/admin/celulas/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar')
+      setSaving(false)
+      return
+    }
 
     router.push('/admin/celulas')
   }
@@ -179,6 +193,7 @@ export default function EditarCelulaPage() {
             Ativo
           </label>
         </div>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

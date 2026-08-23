@@ -12,6 +12,7 @@ const RichTextEditor = dynamic(
 export default function NovoEstudoPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [titulo, setTitulo] = useState('')
   const [descricao, setDescricao] = useState('')
   const [conteudo, setConteudo] = useState('')
@@ -23,7 +24,7 @@ export default function NovoEstudoPage() {
     e.preventDefault()
     setLoading(true)
 
-    await fetch('/api/admin/estudos', {
+    const res = await fetch('/api/admin/estudos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -35,6 +36,12 @@ export default function NovoEstudoPage() {
         publicado,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar o estudo. Tente novamente.')
+      setLoading(false)
+      return
+    }
 
     router.push('/admin/estudos')
   }
@@ -126,6 +133,7 @@ export default function NovoEstudoPage() {
             Publicar
           </label>
         </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

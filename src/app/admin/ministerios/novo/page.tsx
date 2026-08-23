@@ -12,6 +12,7 @@ const RichTextEditor = dynamic(
 export default function NovoMinisterioPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [nome, setNome] = useState('')
   const [responsavel, setResponsavel] = useState('')
   const [descricao, setDescricao] = useState('')
@@ -36,6 +37,12 @@ export default function NovoMinisterioPage() {
         conteudo,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar o ministério. Tente novamente.')
+      setLoading(false)
+      return
+    }
 
     const data = await res.json()
 
@@ -153,6 +160,7 @@ export default function NovoMinisterioPage() {
             <RichTextEditor value={conteudo} onChange={setConteudo} />
           </div>
         </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

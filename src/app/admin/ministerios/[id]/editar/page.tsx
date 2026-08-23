@@ -27,6 +27,7 @@ export default function EditarMinisterioPage() {
   const id = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [nome, setNome] = useState('')
   const [responsavel, setResponsavel] = useState('')
   const [descricao, setDescricao] = useState('')
@@ -40,8 +41,14 @@ export default function EditarMinisterioPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/admin/ministerios/${id}`).then((r) => r.json()),
-      fetch(`/api/admin/galeria?ministerioId=${id}`).then((r) => r.json()),
+      fetch(`/api/admin/ministerios/${id}`).then((r) => {
+        if (!r.ok) throw new Error('Erro ao carregar ministério')
+        return r.json()
+      }),
+      fetch(`/api/admin/galeria?ministerioId=${id}`).then((r) => {
+        if (!r.ok) throw new Error('Erro ao carregar galeria')
+        return r.json()
+      }),
     ])
       .then(([data, gal]) => {
         setNome(data.nome ?? '')
@@ -52,6 +59,7 @@ export default function EditarMinisterioPage() {
         setImagemAtual(data.imagem ?? null)
         setGaleria(Array.isArray(gal) ? gal : [])
       })
+      .catch(() => setError('Erro ao carregar o ministério.'))
       .finally(() => setLoading(false))
   }, [id])
 
@@ -59,7 +67,7 @@ export default function EditarMinisterioPage() {
     e.preventDefault()
     setSaving(true)
 
-    await fetch(`/api/admin/ministerios/${id}`, {
+    const res = await fetch(`/api/admin/ministerios/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -70,6 +78,12 @@ export default function EditarMinisterioPage() {
         conteudo,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar o ministério. Tente novamente.')
+      setSaving(false)
+      return
+    }
 
     if (imagem) {
       const formData = new FormData()
@@ -206,6 +220,7 @@ export default function EditarMinisterioPage() {
           </div>
         </div>
         <GaleriaManager ministerioId={id} itens={galeria} />
+        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

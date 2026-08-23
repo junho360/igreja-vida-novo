@@ -6,13 +6,15 @@ import { useState } from 'react'
 export default function NovoDevocionalPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
+    setError('')
     const form = new FormData(e.currentTarget)
 
-    await fetch('/api/admin/devocionais', {
+    const res = await fetch('/api/admin/devocionais', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -22,6 +24,12 @@ export default function NovoDevocionalPage() {
         publicadoEm: form.get('publicado') ? new Date().toISOString() : null,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar devocional. Tente novamente.')
+      setLoading(false)
+      return
+    }
 
     router.push('/admin/devocionais')
   }
@@ -72,6 +80,11 @@ export default function NovoDevocionalPage() {
             Publicar imediatamente
           </label>
         </div>
+        {error && (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
         <div className="flex gap-3">
           <button
             type="submit"

@@ -6,13 +6,14 @@ import { useState } from 'react'
 export default function NovaCelulaPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     const form = new FormData(e.currentTarget)
 
-    await fetch('/api/admin/celulas', {
+    const res = await fetch('/api/admin/celulas', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -26,6 +27,12 @@ export default function NovaCelulaPage() {
         ativo: form.get('ativo'),
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar')
+      setLoading(false)
+      return
+    }
 
     router.push('/admin/celulas')
   }
@@ -152,6 +159,7 @@ export default function NovaCelulaPage() {
             Ativo
           </label>
         </div>
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

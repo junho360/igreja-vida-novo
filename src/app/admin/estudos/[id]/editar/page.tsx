@@ -15,6 +15,7 @@ export default function EditarEstudoPage() {
   const id = params.id as string
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [titulo, setTitulo] = useState('')
   const [descricao, setDescricao] = useState('')
   const [conteudo, setConteudo] = useState('')
@@ -34,6 +35,7 @@ export default function EditarEstudoPage() {
         setOrdem(String(data.ordem ?? 0))
         setPublicado(data.publicado ?? false)
       })
+      .catch(() => setError('Erro ao carregar o estudo.'))
       .finally(() => setLoading(false))
   }, [id])
 
@@ -41,7 +43,7 @@ export default function EditarEstudoPage() {
     e.preventDefault()
     setSaving(true)
 
-    await fetch(`/api/admin/estudos/${id}`, {
+    const res = await fetch(`/api/admin/estudos/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -53,6 +55,12 @@ export default function EditarEstudoPage() {
         publicado,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar o estudo. Tente novamente.')
+      setSaving(false)
+      return
+    }
 
     router.push('/admin/estudos')
   }
@@ -148,6 +156,7 @@ export default function EditarEstudoPage() {
             Publicar
           </label>
         </div>
+        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

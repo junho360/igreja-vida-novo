@@ -10,6 +10,7 @@ export default function EditarEventoPage() {
   const id = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [ministerios, setMinisterios] = useState<
     Array<{ id: string; nome: string }>
   >([])
@@ -28,39 +29,52 @@ export default function EditarEventoPage() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/admin/eventos/${id}`).then((r) => r.json()),
-      fetch('/api/admin/ministerios').then((r) => r.json()),
-    ]).then(([evento, mins]) => {
-      setMinisterios(mins)
-      function toLocal(iso: string | null) {
-        if (!iso) return ''
-        const d = new Date(iso)
-        const offset = d.getTimezoneOffset()
-        return new Date(d.getTime() - offset * 60000).toISOString().slice(0, 16)
-      }
-      setForm({
-        titulo: evento.titulo ?? '',
-        descricao: evento.descricao ?? '',
-        data: toLocal(evento.data),
-        dataFim: toLocal(evento.dataFim),
-        local: evento.local ?? '',
-        valor: String(evento.valor ?? 0),
-        inscricaoInicio: toLocal(evento.inscricaoInicio),
-        inscricaoFim: toLocal(evento.inscricaoFim),
-        dataPlanejamentoInicio: evento.dataPlanejamentoInicio
-          ? new Date(evento.dataPlanejamentoInicio).toISOString().slice(0, 10)
-          : '',
-        ministerioId: evento.ministerioId ?? '',
+      fetch(`/api/admin/eventos/${id}`).then((r) => {
+        if (!r.ok) throw new Error('Erro ao carregar evento')
+        return r.json()
+      }),
+      fetch('/api/admin/ministerios').then((r) => {
+        if (!r.ok) throw new Error('Erro ao carregar ministérios')
+        return r.json()
+      }),
+    ])
+      .then(([evento, mins]) => {
+        setMinisterios(mins)
+        function toLocal(iso: string | null) {
+          if (!iso) return ''
+          const d = new Date(iso)
+          const offset = d.getTimezoneOffset()
+          return new Date(d.getTime() - offset * 60000)
+            .toISOString()
+            .slice(0, 16)
+        }
+        setForm({
+          titulo: evento.titulo ?? '',
+          descricao: evento.descricao ?? '',
+          data: toLocal(evento.data),
+          dataFim: toLocal(evento.dataFim),
+          local: evento.local ?? '',
+          valor: String(evento.valor ?? 0),
+          inscricaoInicio: toLocal(evento.inscricaoInicio),
+          inscricaoFim: toLocal(evento.inscricaoFim),
+          dataPlanejamentoInicio: evento.dataPlanejamentoInicio
+            ? new Date(evento.dataPlanejamentoInicio).toISOString().slice(0, 10)
+            : '',
+          ministerioId: evento.ministerioId ?? '',
+        })
+        setLoading(false)
       })
-      setLoading(false)
-    })
+      .catch(() => {
+        setError('Erro ao carregar o evento.')
+        setLoading(false)
+      })
   }, [id])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSaving(true)
 
-    await fetch(`/api/admin/eventos/${id}`, {
+    const res = await fetch(`/api/admin/eventos/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -77,6 +91,12 @@ export default function EditarEventoPage() {
         ministerioId: form.ministerioId || null,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar o evento. Tente novamente.')
+      setSaving(false)
+      return
+    }
 
     router.push('/admin/eventos')
   }
@@ -257,6 +277,7 @@ export default function EditarEventoPage() {
           />
         </div>
         <LoteManager eventoId={id} />
+        {error && <p className="text-sm text-red-600">{error}</p>}
         <div className="flex gap-3">
           <button
             type="submit"

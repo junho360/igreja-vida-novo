@@ -9,6 +9,7 @@ export default function EditarPregacaoPage() {
   const id = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const [form, setForm] = useState({
     titulo: '',
     descricao: '',
@@ -36,13 +37,18 @@ export default function EditarPregacaoPage() {
         })
         setLoading(false)
       })
+      .catch(() => {
+        setError('Erro ao carregar pregação.')
+        setLoading(false)
+      })
   }, [id])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSaving(true)
+    setError('')
 
-    await fetch(`/api/admin/pregacoes/${id}`, {
+    const res = await fetch(`/api/admin/pregacoes/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -52,6 +58,12 @@ export default function EditarPregacaoPage() {
           : null,
       }),
     })
+
+    if (!res.ok) {
+      setError('Erro ao salvar pregação. Tente novamente.')
+      setSaving(false)
+      return
+    }
 
     router.push('/admin/pregacoes')
   }
@@ -156,6 +168,11 @@ export default function EditarPregacaoPage() {
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
+        {error && (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
         <div className="flex gap-3">
           <button
             type="submit"
