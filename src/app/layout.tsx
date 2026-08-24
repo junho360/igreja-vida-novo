@@ -18,6 +18,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Igreja Vida',
   description: 'Igreja Vida - Uma comunidade de fé, amor e esperança',
+  icons: {
+    icon: '/logo.jpg',
+  },
 }
 
 export const dynamic = 'force-dynamic'
