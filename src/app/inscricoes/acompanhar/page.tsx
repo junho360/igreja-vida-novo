@@ -366,7 +366,7 @@ function UploadComprovante({
           </p>
           <WhatsAppButton
             numero={whatsapp}
-            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.`}
+            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.\n\nNome: ${inscricaoNome}\nConvidado: ${nomeConvidado ? `Sim - ${nomeConvidado}` : 'Não'}`}
           />
         </div>
       )}

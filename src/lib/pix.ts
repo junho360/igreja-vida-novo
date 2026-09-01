@@ -22,7 +22,8 @@ function tlv(id: string, value: string): string {
 export function generatePixPayload(
   key: string,
   merchantName: string,
-  merchantCity: string
+  merchantCity: string,
+  amount?: number
 ): string {
   const name = merchantName
     .normalize('NFD')
@@ -45,6 +46,9 @@ export function generatePixPayload(
   payload += tlv('58', 'BR')
   payload += tlv('59', name)
   payload += tlv('60', city)
+  if (amount !== undefined && amount > 0) {
+    payload += tlv('54', amount.toFixed(2))
+  }
   payload += '6304'
 
   const crc = crc16(payload)

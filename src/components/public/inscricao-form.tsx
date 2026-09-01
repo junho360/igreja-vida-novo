@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { generatePixPayload } from '@/lib/pix'
 import WhatsAppButton from '@/components/public/whatsapp-button'
 
@@ -71,6 +71,11 @@ export default function InscricaoForm({
 
   const inscricoesAbertas = (!inicio || now >= inicio) && (!fim || now <= fim)
   const inscricoesEncerradas = fim && now > fim
+
+  const pixPayload = useMemo(
+    () => generatePixPayload(pix, nomeIgreja, cidade, inscricao?.valor),
+    [pix, nomeIgreja, cidade, inscricao?.valor]
+  )
 
   useEffect(() => {
     fetch(`/api/eventos/${eventoId}/lotes`)
@@ -175,18 +180,16 @@ export default function InscricaoForm({
               </p>
             )}
             <div className="mt-4 flex flex-col items-center">
-              <InscricaoQrCode
-                payload={generatePixPayload(pix, nomeIgreja, cidade)}
-              />
+              <InscricaoQrCode payload={pixPayload} />
               <p className="mt-3 text-xs text-gray-500">
                 Chave PIX (copia e cola):
               </p>
               <p className="font-mono text-sm text-foreground break-all">
-                {pix}
+                {pixPayload}
               </p>
               <button
                 type="button"
-                onClick={() => navigator.clipboard.writeText(pix)}
+                onClick={() => navigator.clipboard.writeText(pixPayload)}
                 className="mt-3 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-light transition-colors"
               >
                 Copiar chave PIX
@@ -205,6 +208,8 @@ export default function InscricaoForm({
           <UploadComprovante
             inscricaoId={inscricao.id}
             whatsapp={whatsapp}
+            nome={form.nome}
+            nomeConvidado={form.nomeConvidado}
             onComplete={() => setStep('enviado')}
           />
         </div>
@@ -387,10 +392,14 @@ export default function InscricaoForm({
 function UploadComprovante({
   inscricaoId,
   whatsapp,
+  nome,
+  nomeConvidado,
   onComplete,
 }: {
   inscricaoId: string
   whatsapp?: string
+  nome: string
+  nomeConvidado?: string
   onComplete: () => void
 }) {
   const [uploading, setUploading] = useState(false)
@@ -526,7 +535,7 @@ function UploadComprovante({
           </p>
           <WhatsAppButton
             numero={whatsapp}
-            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.`}
+            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.\n\nNome: ${nome}\nConvidado: ${nomeConvidado ? `Sim - ${nomeConvidado}` : 'Não'}`}
           />
         </div>
       )}
