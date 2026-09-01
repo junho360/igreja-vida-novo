@@ -1148,6 +1148,11 @@ async function main() {
       descricao: 'Chave PIX para dízimos e ofertas',
     },
     {
+      chave: 'pix_inscricao',
+      valor: '',
+      descricao: 'Chave PIX para inscrições em eventos',
+    },
+    {
       chave: 'instagram',
       valor: '@igrejavida',
       descricao: 'Perfil do Instagram',
