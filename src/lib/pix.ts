@@ -49,6 +49,7 @@ export function generatePixPayload(
   if (amount !== undefined && amount > 0) {
     payload += tlv('54', amount.toFixed(2))
   }
+  payload += tlv('62', '0503***')
   payload += '6304'
 
   const crc = crc16(payload)
