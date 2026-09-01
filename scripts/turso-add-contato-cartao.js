@@ -9,7 +9,5 @@ async function main() {
     args: [crypto.randomUUID(), 'contato_cartao', '', 'Contato para pagamento em cartão de crédito', new Date().toISOString(), new Date().toISOString()]
   })
   console.log('contato_cartao config added')
-  const r = await client.execute("SELECT chave, valor, descricao FROM Configuracao ORDER BY chave")
-  console.log(JSON.stringify(r.rows))
 }
 main()

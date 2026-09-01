@@ -1153,6 +1153,11 @@ async function main() {
       descricao: 'Chave PIX para inscrições em eventos',
     },
     {
+      chave: 'contato_cartao',
+      valor: '',
+      descricao: 'Contato para pagamento em cartão de crédito',
+    },
+    {
       chave: 'instagram',
       valor: '@igrejavida',
       descricao: 'Perfil do Instagram',

@@ -28,6 +28,7 @@ interface InscricaoFormProps {
   nomeIgreja?: string
   cidade?: string
   pix?: string
+  contatoCartao?: string
   inscricaoInicio?: string | null
   inscricaoFim?: string | null
 }
@@ -42,6 +43,7 @@ export default function InscricaoForm({
   nomeIgreja = 'Igreja Vida',
   cidade = 'Sao Paulo',
   pix = '',
+  contatoCartao = '',
   inscricaoInicio,
   inscricaoFim,
 }: InscricaoFormProps) {
@@ -150,6 +152,12 @@ export default function InscricaoForm({
               Para confirmar sua inscrição, realize o pagamento via PIX no valor
               de <strong>R$ {inscricao.valor.toFixed(2)}</strong>.
             </p>
+            {contatoCartao && (
+              <p className="mt-3 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">
+                Você também pode pagar no cartão de crédito. Entre em contato:{' '}
+                <strong>{contatoCartao}</strong>
+              </p>
+            )}
             <div className="mt-4 flex flex-col items-center">
               <InscricaoQrCode
                 payload={generatePixPayload(pix, nomeIgreja, cidade)}

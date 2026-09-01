@@ -12,7 +12,13 @@ export default async function EventosPage() {
       orderBy: { data: 'asc' },
       include: { ministerio: true },
     }),
-    getConfigs(['nome_igreja', 'cidade', 'pix', 'pix_inscricao']),
+    getConfigs([
+      'nome_igreja',
+      'cidade',
+      'pix',
+      'pix_inscricao',
+      'contato_cartao',
+    ]),
   ])
 
   return (
@@ -113,6 +119,7 @@ export default async function EventosPage() {
                   nomeIgreja={cfg.nome_igreja}
                   cidade={cfg.cidade}
                   pix={cfg.pix_inscricao || cfg.pix}
+                  contatoCartao={cfg.contato_cartao}
                   inscricaoInicio={evento.inscricaoInicio?.toISOString()}
                   inscricaoFim={evento.inscricaoFim?.toISOString()}
                 />
