@@ -114,15 +114,10 @@ export default async function EventosPage() {
               )}
               {cfg.contato_cartao && (
                 <p className="mt-3 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">
-                  Pagamento no cartão de crédito? Fale com{' '}
-                  {cfg.contato_cartao_nome ? (
-                    <>
-                      <strong>{cfg.contato_cartao_nome}</strong>:{' '}
-                      <strong>{cfg.contato_cartao}</strong>
-                    </>
-                  ) : (
-                    <strong>{cfg.contato_cartao}</strong>
-                  )}
+                  Você também pode pagar no cartão de crédito! Para combinar, é
+                  só chamar{' '}
+                  <strong>{cfg.contato_cartao_nome || 'o responsável'}</strong>{' '}
+                  no <strong>{cfg.contato_cartao}</strong>.
                 </p>
               )}
               <div className="mt-4">
