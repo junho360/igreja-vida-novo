@@ -204,6 +204,7 @@ export default function InscricaoForm({
           </p>
           <UploadComprovante
             inscricaoId={inscricao.id}
+            whatsapp={whatsapp}
             onComplete={() => setStep('enviado')}
           />
         </div>
@@ -385,17 +386,56 @@ export default function InscricaoForm({
 
 function UploadComprovante({
   inscricaoId,
+  whatsapp,
   onComplete,
 }: {
   inscricaoId: string
+  whatsapp?: string
   onComplete: () => void
 }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
+  function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]
+    if (!f) return
+
+    if (
+      !['image/jpeg', 'image/png', 'image/webp', 'application/pdf'].includes(
+        f.type
+      )
+    ) {
+      setError('Tipo não permitido. Use foto (JPG/PNG) ou PDF.')
+      setFile(null)
+      setPreview(null)
+      return
+    }
+    if (f.size > 5 * 1024 * 1024) {
+      setError('Arquivo muito grande. Máximo 5MB.')
+      setFile(null)
+      setPreview(null)
+      return
+    }
+
+    setError('')
+    setFile(f)
+    if (f.type.startsWith('image/')) {
+      if (preview) URL.revokeObjectURL(preview)
+      setPreview(URL.createObjectURL(f))
+    } else {
+      setPreview(null)
+    }
+  }
+
+  function handleReset() {
+    setFile(null)
+    setPreview(null)
+  }
+
   async function handleUpload() {
-    const file = fileRef.current?.files?.[0]
     if (!file) return
 
     setUploading(true)
@@ -422,25 +462,74 @@ function UploadComprovante({
   }
 
   return (
-    <div className="mt-3">
+    <div className="mt-3 space-y-3">
       <input
         ref={fileRef}
         type="file"
         accept="image/jpeg,image/png,image/webp,application/pdf"
-        className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-light"
+        className="hidden"
+        onChange={handleSelect}
       />
-      <p className="mt-1 text-xs text-gray-400">
-        JPG, PNG, WebP ou PDF. Máximo 5MB.
-      </p>
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
-      <button
-        type="button"
-        onClick={handleUpload}
-        disabled={uploading}
-        className="mt-3 rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
-      >
-        {uploading ? 'Enviando...' : 'Enviar comprovante'}
-      </button>
+      {!file ? (
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          className="block w-full rounded-md border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-4 text-center text-sm font-medium text-gray-600 hover:border-primary hover:text-primary transition-colors"
+        >
+          📎 Escolher comprovante (foto ou PDF)
+        </button>
+      ) : (
+        <>
+          {preview ? (
+            <img
+              src={preview}
+              alt="Prévia do comprovante"
+              className="mx-auto max-h-48 rounded-md border border-gray-200"
+            />
+          ) : (
+            <p className="text-sm text-gray-600">📄 {file.name}</p>
+          )}
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={handleUpload}
+              disabled={uploading}
+              className="flex-1 rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+            >
+              {uploading ? 'Enviando...' : 'Confirmar e enviar'}
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              disabled={uploading}
+              className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
+            >
+              Trocar
+            </button>
+          </div>
+        </>
+      )}
+      <p className="text-xs text-gray-400">JPG, PNG ou PDF. Máximo 5MB.</p>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <div className="rounded-md bg-blue-50 p-3 text-xs text-blue-800">
+        <p className="font-semibold">Não consegue tirar print?</p>
+        <p className="mt-0.5">
+          No app do seu banco: abra o comprovante → toque em
+          &quot;Compartilhar&quot; → salve como PDF. Depois escolha o arquivo
+          aqui.
+        </p>
+      </div>
+      {whatsapp && (
+        <div className="border-t border-gray-200 pt-3">
+          <p className="mb-2 text-xs text-gray-500">
+            Não conseguiu anexar? Envie o comprovante direto no nosso WhatsApp:
+          </p>
+          <WhatsAppButton
+            numero={whatsapp}
+            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.`}
+          />
+        </div>
+      )}
     </div>
   )
 }
