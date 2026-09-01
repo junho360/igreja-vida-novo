@@ -74,7 +74,7 @@ export default function InscricaoActions({
       <td className="px-6 py-4 text-sm">
         {item.comprovante ? (
           <a
-            href={item.comprovante}
+            href={`/api/inscricoes/${item.id}/comprovante`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"

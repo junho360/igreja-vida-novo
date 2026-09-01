@@ -84,19 +84,21 @@ model LoteInscricao {
 }
 
 model Inscricao {
-  id          String    @id @default(cuid())
-  nome        String
-  email       String
-  telefone    String?
-  valor       Float
-  status      String    @default("pendente")
-  comprovante String?
-  loteId      String?
-  lote        LoteInscricao? @relation(fields: [loteId], references: [id])
-  eventoId    String
-  evento      Evento    @relation(fields: [eventoId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                String    @id @default(cuid())
+  nome              String
+  email             String
+  telefone          String?
+  valor             Float
+  status            String    @default("pendente")
+  comprovante       String?
+  comprovanteDados  String?
+  comprovanteMime   String?
+  loteId            String?
+  lote              LoteInscricao? @relation(fields: [loteId], references: [id])
+  eventoId          String
+  evento            Evento    @relation(fields: [eventoId], references: [id])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model Devocional {

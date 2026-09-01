@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { writeFile } from 'fs/promises'
-import { join } from 'path'
 
 export async function POST(
   request: Request,
@@ -48,26 +46,55 @@ export async function POST(
       )
     }
 
-    const ext = file.name.split('.').pop() ?? 'jpg'
-    const filename = `${id}-${Date.now()}.${ext}`
-    const filepath = join(process.cwd(), 'public', 'uploads', filename)
-
     const buffer = Buffer.from(await file.arrayBuffer())
-    await writeFile(filepath, buffer)
+    const base64 = buffer.toString('base64')
 
     await prisma.inscricao.update({
       where: { id },
-      data: { comprovante: `/uploads/${filename}` },
+      data: {
+        comprovante: 'ok',
+        comprovanteDados: base64,
+        comprovanteMime: file.type,
+      },
     })
 
-    return NextResponse.json({
-      success: true,
-      comprovante: `/uploads/${filename}`,
-    })
+    return NextResponse.json({ success: true })
   } catch (err) {
     console.error('Erro ao enviar comprovante:', err)
     return NextResponse.json(
       { error: 'Erro interno ao processar upload' },
+      { status: 500 }
+    )
+  }
+}
+
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params
+
+    const inscricao = await prisma.inscricao.findUnique({ where: { id } })
+    if (!inscricao?.comprovanteDados || !inscricao?.comprovanteMime) {
+      return NextResponse.json(
+        { error: 'Comprovante não encontrado' },
+        { status: 404 }
+      )
+    }
+
+    const buffer = Buffer.from(inscricao.comprovanteDados, 'base64')
+
+    return new Response(new Uint8Array(buffer), {
+      headers: {
+        'Content-Type': inscricao.comprovanteMime,
+        'Content-Disposition': 'inline',
+      },
+    })
+  } catch (err) {
+    console.error('Erro ao buscar comprovante:', err)
+    return NextResponse.json(
+      { error: 'Erro interno ao buscar comprovante' },
       { status: 500 }
     )
   }

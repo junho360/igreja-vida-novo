@@ -149,7 +149,7 @@ export default function AcompanharInscricoes() {
                     Comprovante enviado
                   </span>
                   <a
-                    href={insc.comprovante}
+                    href={`/api/inscricoes/${insc.id}/comprovante`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-primary hover:underline"
