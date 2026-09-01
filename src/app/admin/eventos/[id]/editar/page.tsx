@@ -21,6 +21,8 @@ export default function EditarEventoPage() {
     dataFim: '',
     local: '',
     valor: '0',
+    valorComConvidado: '0',
+    valorSemConvidado: '0',
     inscricaoInicio: '',
     inscricaoFim: '',
     dataPlanejamentoInicio: '',
@@ -56,6 +58,8 @@ export default function EditarEventoPage() {
           dataFim: toLocal(evento.dataFim),
           local: evento.local ?? '',
           valor: String(evento.valor ?? 0),
+          valorComConvidado: String(evento.valorComConvidado ?? 0),
+          valorSemConvidado: String(evento.valorSemConvidado ?? 0),
           inscricaoInicio: toLocal(evento.inscricaoInicio),
           inscricaoFim: toLocal(evento.inscricaoFim),
           dataPlanejamentoInicio: evento.dataPlanejamentoInicio
@@ -90,6 +94,8 @@ export default function EditarEventoPage() {
           ? new Date(form.inscricaoFim).toISOString()
           : null,
         valor: Number(form.valor) || 0,
+        valorComConvidado: Number(form.valorComConvidado) || 0,
+        valorSemConvidado: Number(form.valorSemConvidado) || 0,
         ministerioId: form.ministerioId || null,
         publicado: form.publicado,
       }),
@@ -193,10 +199,46 @@ export default function EditarEventoPage() {
         </div>
         <div>
           <label
+            htmlFor="valorSemConvidado"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Valor sem convidado (R$) - 0 = Gratuito
+          </label>
+          <input
+            type="number"
+            id="valorSemConvidado"
+            step="0.01"
+            value={form.valorSemConvidado}
+            onChange={(e) =>
+              setForm({ ...form, valorSemConvidado: e.target.value })
+            }
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="valorComConvidado"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Valor com convidado (R$) - 0 = Gratuito
+          </label>
+          <input
+            type="number"
+            id="valorComConvidado"
+            step="0.01"
+            value={form.valorComConvidado}
+            onChange={(e) =>
+              setForm({ ...form, valorComConvidado: e.target.value })
+            }
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label
             htmlFor="valor"
             className="block text-sm font-medium text-gray-700"
           >
-            Valor (R$) - 0 = Gratuito
+            Valor único (R$) - usado se não definir os dois acima
           </label>
           <input
             type="number"

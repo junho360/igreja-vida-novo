@@ -23,6 +23,8 @@ interface LotesResponse {
 interface InscricaoFormProps {
   eventoId: string
   valor: number
+  valorComConvidado?: number | null
+  valorSemConvidado?: number | null
   nomeIgreja?: string
   cidade?: string
   pix?: string
@@ -35,6 +37,8 @@ type Step = 'form' | 'pix' | 'enviado'
 export default function InscricaoForm({
   eventoId,
   valor,
+  valorComConvidado = null,
+  valorSemConvidado = null,
   nomeIgreja = 'Igreja Vida',
   cidade = 'Sao Paulo',
   pix = '',
@@ -43,6 +47,7 @@ export default function InscricaoForm({
 }: InscricaoFormProps) {
   const [step, setStep] = useState<Step>('form')
   const [loading, setLoading] = useState(false)
+  const [temConvidado, setTemConvidado] = useState(false)
   const [inscricao, setInscricao] = useState<{
     id: string
     valor: number
@@ -81,7 +86,14 @@ export default function InscricaoForm({
   }, [eventoId])
 
   const loteAtual = lotesData?.loteDisponivel
-  const valorFinal = loteAtual ? loteAtual.valor : valor
+  const temDoisValores = valorComConvidado != null && valorSemConvidado != null
+  const valorFinal = temDoisValores
+    ? temConvidado
+      ? valorComConvidado!
+      : valorSemConvidado!
+    : loteAtual
+      ? loteAtual.valor
+      : valor
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -93,7 +105,8 @@ export default function InscricaoForm({
       body: JSON.stringify({
         ...form,
         eventoId,
-        loteId: loteAtual?.id ?? null,
+        temConvidado,
+        loteId: temDoisValores ? null : (loteAtual?.id ?? null),
       }),
     })
 
@@ -206,26 +219,59 @@ export default function InscricaoForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {lotesData && lotesData.lotes.length > 0 && (
-        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-          {loteAtual ? (
-            <>
-              <p className="text-sm font-semibold text-primary">
-                {loteAtual.nome}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                {loteAtual.vagasRestantes} vaga
-                {loteAtual.vagasRestantes !== 1 ? 's' : ''} restante
-                {loteAtual.vagasRestantes !== 1 ? 's' : ''}
-              </p>
-            </>
-          ) : (
-            <p className="text-sm font-medium text-gray-600">Valor cheio</p>
-          )}
-          <p className="text-lg font-bold text-foreground mt-1">
-            R$ {valorFinal.toFixed(2)}
+      {temDoisValores ? (
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-gray-700">
+            Forma de inscrição
           </p>
+          <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <input
+              type="radio"
+              name="temConvidado"
+              checked={!temConvidado}
+              onChange={() => setTemConvidado(false)}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="text-sm text-gray-700">
+              Sem convidado - R$ {valorSemConvidado!.toFixed(2)}
+            </span>
+          </label>
+          <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <input
+              type="radio"
+              name="temConvidado"
+              checked={temConvidado}
+              onChange={() => setTemConvidado(true)}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="text-sm text-gray-700">
+              Com convidado - R$ {valorComConvidado!.toFixed(2)}
+            </span>
+          </label>
         </div>
+      ) : (
+        lotesData &&
+        lotesData.lotes.length > 0 && (
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+            {loteAtual ? (
+              <>
+                <p className="text-sm font-semibold text-primary">
+                  {loteAtual.nome}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {loteAtual.vagasRestantes} vaga
+                  {loteAtual.vagasRestantes !== 1 ? 's' : ''} restante
+                  {loteAtual.vagasRestantes !== 1 ? 's' : ''}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm font-medium text-gray-600">Valor cheio</p>
+            )}
+            <p className="text-lg font-bold text-foreground mt-1">
+              R$ {valorFinal.toFixed(2)}
+            </p>
+          </div>
+        )
       )}
 
       <div>

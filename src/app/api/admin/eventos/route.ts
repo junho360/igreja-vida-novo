@@ -20,6 +20,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
+
+  const temConvidado =
+    Number(body.valorComConvidado) > 0 || Number(body.valorSemConvidado) > 0
+
   const evento = await prisma.evento.create({
     data: {
       titulo: body.titulo,
@@ -29,6 +33,12 @@ export async function POST(request: Request) {
       horario: null,
       local: body.local,
       valor: Number(body.valor) || 0,
+      valorComConvidado: temConvidado
+        ? Number(body.valorComConvidado) || 0
+        : null,
+      valorSemConvidado: temConvidado
+        ? Number(body.valorSemConvidado) || 0
+        : null,
       inscricaoInicio: body.inscricaoInicio
         ? new Date(body.inscricaoInicio)
         : null,

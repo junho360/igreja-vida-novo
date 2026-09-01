@@ -33,6 +33,8 @@ export default function NovoEventoPage() {
         dataFim: form.get('dataFim') || null,
         local: form.get('local'),
         valor: form.get('valor'),
+        valorComConvidado: form.get('valorComConvidado'),
+        valorSemConvidado: form.get('valorSemConvidado'),
         inscricaoInicio: form.get('inscricaoInicio') || null,
         inscricaoFim: form.get('inscricaoFim') || null,
         dataPlanejamentoInicio: form.get('dataPlanejamentoInicio') || null,
@@ -148,10 +150,42 @@ export default function NovoEventoPage() {
         </div>
         <div>
           <label
+            htmlFor="valorSemConvidado"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Valor sem convidado (R$) - 0 = Gratuito
+          </label>
+          <input
+            type="number"
+            id="valorSemConvidado"
+            name="valorSemConvidado"
+            step="0.01"
+            defaultValue="0"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="valorComConvidado"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Valor com convidado (R$) - 0 = Gratuito
+          </label>
+          <input
+            type="number"
+            id="valorComConvidado"
+            name="valorComConvidado"
+            step="0.01"
+            defaultValue="0"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div>
+          <label
             htmlFor="valor"
             className="block text-sm font-medium text-gray-700"
           >
-            Valor (R$) - 0 = Gratuito
+            Valor único (R$) - usado se não definir os dois acima
           </label>
           <input
             type="number"

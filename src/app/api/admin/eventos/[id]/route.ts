@@ -36,6 +36,9 @@ export async function PUT(
   const { id } = await params
   const body = await req.json()
 
+  const temConvidado =
+    Number(body.valorComConvidado) > 0 || Number(body.valorSemConvidado) > 0
+
   const evento = await prisma.evento.update({
     where: { id },
     data: {
@@ -45,6 +48,12 @@ export async function PUT(
       dataFim: body.dataFim ? new Date(body.dataFim) : null,
       local: body.local,
       valor: Number(body.valor) || 0,
+      valorComConvidado: temConvidado
+        ? Number(body.valorComConvidado) || 0
+        : null,
+      valorSemConvidado: temConvidado
+        ? Number(body.valorSemConvidado) || 0
+        : null,
       inscricaoInicio: body.inscricaoInicio
         ? new Date(body.inscricaoInicio)
         : null,

@@ -89,15 +89,27 @@ export default async function EventosPage() {
                   )}
                 </p>
               )}
-              {evento.valor != null && evento.valor > 0 && (
+              {evento.valorComConvidado != null &&
+              evento.valorSemConvidado != null ? (
                 <p className="mt-2 text-sm font-semibold text-primary">
-                  Valor: R$ {evento.valor.toFixed(2)}
+                  Valor: R$ {evento.valorSemConvidado.toFixed(2)} (sem
+                  convidado) · R$ {evento.valorComConvidado.toFixed(2)} (com
+                  convidado)
                 </p>
+              ) : (
+                evento.valor != null &&
+                evento.valor > 0 && (
+                  <p className="mt-2 text-sm font-semibold text-primary">
+                    Valor: R$ {evento.valor.toFixed(2)}
+                  </p>
+                )
               )}
               <div className="mt-4">
                 <InscricaoForm
                   eventoId={evento.id}
                   valor={evento.valor ?? 0}
+                  valorComConvidado={evento.valorComConvidado ?? null}
+                  valorSemConvidado={evento.valorSemConvidado ?? null}
                   nomeIgreja={cfg.nome_igreja}
                   cidade={cfg.cidade}
                   pix={cfg.pix_inscricao || cfg.pix}

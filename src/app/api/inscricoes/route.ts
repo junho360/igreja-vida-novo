@@ -24,7 +24,12 @@ export async function POST(request: Request) {
   let valor = evento.valor ?? 0
   let loteId: string | null = null
 
-  if (body.loteId) {
+  if (evento.valorComConvidado != null && evento.valorSemConvidado != null) {
+    valor =
+      body.temConvidado === true
+        ? evento.valorComConvidado
+        : evento.valorSemConvidado
+  } else if (body.loteId) {
     const lote = await prisma.loteInscricao.findUnique({
       where: { id: body.loteId },
     })
