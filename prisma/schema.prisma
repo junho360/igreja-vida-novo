@@ -88,6 +88,7 @@ model Inscricao {
   nome              String
   email             String
   telefone          String?
+  nomeConvidado     String?
   valor             Float
   status            String    @default("pendente")
   comprovante       String?

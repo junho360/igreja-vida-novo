@@ -6,6 +6,7 @@ import WhatsAppButton from '@/components/public/whatsapp-button'
 interface Inscricao {
   id: string
   nome: string
+  nomeConvidado?: string | null
   email: string
   valor: number
   status: string
@@ -125,6 +126,11 @@ export default function AcompanharInscricoes() {
                     {new Date(insc.evento.data).toLocaleDateString('pt-BR')} ·{' '}
                     {insc.nome}
                   </p>
+                  {insc.nomeConvidado && (
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      + convidado: {insc.nomeConvidado}
+                    </p>
+                  )}
                   {insc.lote && (
                     <p className="mt-0.5 text-xs text-primary font-medium">
                       {insc.lote.nome}

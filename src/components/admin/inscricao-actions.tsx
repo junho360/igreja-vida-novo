@@ -5,6 +5,7 @@ import { useState } from 'react'
 interface InscricaoItem {
   id: string
   nome: string
+  nomeConvidado?: string | null
   email: string
   telefone?: string | null
   valor: number
@@ -51,6 +52,11 @@ export default function InscricaoActions({
     <tr>
       <td className="px-6 py-4 text-sm font-medium text-gray-900">
         {item.nome}
+        {item.nomeConvidado && (
+          <span className="block text-xs font-normal text-gray-500">
+            + convidado: {item.nomeConvidado}
+          </span>
+        )}
       </td>
       <td className="px-6 py-4 text-sm text-gray-500">{item.email}</td>
       <td className="px-6 py-4 text-sm text-gray-500">

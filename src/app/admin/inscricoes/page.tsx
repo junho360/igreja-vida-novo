@@ -7,6 +7,7 @@ import InscricaoActions from '@/components/admin/inscricao-actions'
 interface Inscricao {
   id: string
   nome: string
+  nomeConvidado: string | null
   email: string
   telefone: string | null
   valor: number

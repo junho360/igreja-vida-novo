@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       nome: body.nome,
       email: body.email,
       telefone: body.telefone,
+      nomeConvidado: body.nomeConvidado || null,
       valor,
       eventoId: body.eventoId,
       loteId,

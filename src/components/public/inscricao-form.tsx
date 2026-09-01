@@ -57,7 +57,12 @@ export default function InscricaoForm({
     id: string
     valor: number
   } | null>(null)
-  const [form, setForm] = useState({ nome: '', email: '', telefone: '' })
+  const [form, setForm] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+    nomeConvidado: '',
+  })
   const [lotesData, setLotesData] = useState<LotesResponse | null>(null)
 
   const now = new Date()
@@ -137,7 +142,7 @@ export default function InscricaoForm({
           <div className="mt-4">
             <WhatsAppButton
               numero={whatsapp}
-              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.\n\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
+              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.\n\nNome: ${form.nome}${form.nomeConvidado ? `\nConvidado: ${form.nomeConvidado}` : ''}\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
             />
           </div>
         )}
@@ -269,6 +274,27 @@ export default function InscricaoForm({
               {valorComConvidado!.toFixed(2)}
             </span>
           </label>
+          {temConvidado && (
+            <div className="ml-1">
+              <label
+                htmlFor="nomeConvidado"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nome do convidado *
+              </label>
+              <input
+                type="text"
+                id="nomeConvidado"
+                required
+                value={form.nomeConvidado}
+                onChange={(e) =>
+                  setForm({ ...form, nomeConvidado: e.target.value })
+                }
+                placeholder="Nome da pessoa que vai com você"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+          )}
         </div>
       ) : (
         lotesData &&

@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation'
 interface Inscricao {
   id: string
   nome: string
+  nomeConvidado: string | null
   email: string
   telefone: string | null
   valor: number
@@ -188,6 +189,11 @@ export default function RelatorioEventoPage() {
                 </td>
                 <td className="border border-gray-300 px-3 py-2 font-medium">
                   {item.nome}
+                  {item.nomeConvidado && (
+                    <div className="text-xs font-normal text-gray-600">
+                      + convidado: {item.nomeConvidado}
+                    </div>
+                  )}
                 </td>
                 <td className="border border-gray-300 px-3 py-2 text-gray-600">
                   {item.email}

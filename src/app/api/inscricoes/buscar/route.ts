@@ -24,6 +24,7 @@ export async function GET(request: Request) {
   const result = inscricoes.map((i) => ({
     id: i.id,
     nome: i.nome,
+    nomeConvidado: i.nomeConvidado,
     email: i.email,
     valor: i.valor,
     status: i.status,
