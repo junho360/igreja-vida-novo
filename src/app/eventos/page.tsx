@@ -99,9 +99,9 @@ export default async function EventosPage() {
               {evento.valorComConvidado != null &&
               evento.valorSemConvidado != null ? (
                 <p className="mt-2 text-sm font-semibold text-primary">
-                  Valor: R$ {evento.valorSemConvidado.toFixed(2)} (sem
-                  convidado) · R$ {evento.valorComConvidado.toFixed(2)} (com
-                  convidado)
+                  Inscrição individual: R$ {evento.valorSemConvidado.toFixed(2)}{' '}
+                  · inscrição dupla (com convidado): R${' '}
+                  {evento.valorComConvidado.toFixed(2)}
                 </p>
               ) : (
                 evento.valor != null &&

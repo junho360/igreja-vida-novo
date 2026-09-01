@@ -153,7 +153,7 @@ export default function NovoEventoPage() {
             htmlFor="valorSemConvidado"
             className="block text-sm font-medium text-gray-700"
           >
-            Valor sem convidado (R$) - 0 = Gratuito
+            Inscrição individual - sem convidado (R$) - 0 = Gratuito
           </label>
           <input
             type="number"
@@ -169,7 +169,7 @@ export default function NovoEventoPage() {
             htmlFor="valorComConvidado"
             className="block text-sm font-medium text-gray-700"
           >
-            Valor com convidado (R$) - 0 = Gratuito
+            Inscrição dupla - com convidado (R$) - 0 = Gratuito
           </label>
           <input
             type="number"

@@ -252,7 +252,8 @@ export default function InscricaoForm({
               className="h-4 w-4 accent-primary"
             />
             <span className="text-sm text-gray-700">
-              Sem convidado - R$ {valorSemConvidado!.toFixed(2)}
+              Inscrição individual (sem convidado) - R${' '}
+              {valorSemConvidado!.toFixed(2)}
             </span>
           </label>
           <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
@@ -264,7 +265,8 @@ export default function InscricaoForm({
               className="h-4 w-4 accent-primary"
             />
             <span className="text-sm text-gray-700">
-              Com convidado - R$ {valorComConvidado!.toFixed(2)}
+              Inscrição dupla (com convidado - pessoa de fora da igreja) - R${' '}
+              {valorComConvidado!.toFixed(2)}
             </span>
           </label>
         </div>
