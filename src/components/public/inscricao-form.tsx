@@ -25,6 +25,7 @@ interface InscricaoFormProps {
   valor: number
   nomeIgreja?: string
   cidade?: string
+  pix?: string
   inscricaoInicio?: string | null
   inscricaoFim?: string | null
 }
@@ -36,6 +37,7 @@ export default function InscricaoForm({
   valor,
   nomeIgreja = 'Igreja Vida',
   cidade = 'Sao Paulo',
+  pix = '',
   inscricaoInicio,
   inscricaoFim,
 }: InscricaoFormProps) {
@@ -137,23 +139,17 @@ export default function InscricaoForm({
             </p>
             <div className="mt-4 flex flex-col items-center">
               <InscricaoQrCode
-                payload={generatePixPayload(
-                  `inscricao-${inscricao.id}`,
-                  nomeIgreja,
-                  cidade
-                )}
+                payload={generatePixPayload(pix, nomeIgreja, cidade)}
               />
               <p className="mt-3 text-xs text-gray-500">
                 Chave PIX (copia e cola):
               </p>
               <p className="font-mono text-sm text-foreground break-all">
-                inscricao-{inscricao.id}
+                {pix}
               </p>
               <button
                 type="button"
-                onClick={() =>
-                  navigator.clipboard.writeText(`inscricao-${inscricao.id}`)
-                }
+                onClick={() => navigator.clipboard.writeText(pix)}
                 className="mt-3 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-light transition-colors"
               >
                 Copiar chave PIX
