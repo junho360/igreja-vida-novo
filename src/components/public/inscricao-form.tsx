@@ -142,7 +142,7 @@ export default function InscricaoForm({
           <div className="mt-4">
             <WhatsAppButton
               numero={whatsapp}
-              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.\n\nNome: ${form.nome}${form.nomeConvidado ? `\nConvidado: ${form.nomeConvidado}` : ''}\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
+              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.\n\nNome: ${form.nome}\nConvidado: ${form.nomeConvidado ? `Sim - ${form.nomeConvidado}` : 'Não'}\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
             />
           </div>
         )}

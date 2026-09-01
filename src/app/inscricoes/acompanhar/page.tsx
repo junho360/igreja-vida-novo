@@ -189,6 +189,7 @@ export default function AcompanharInscricoes() {
                     <UploadComprovante
                       inscricaoId={insc.id}
                       inscricaoNome={insc.nome}
+                      nomeConvidado={insc.nomeConvidado}
                       whatsapp={whatsapp}
                     />
                   </div>
@@ -204,10 +205,12 @@ export default function AcompanharInscricoes() {
 function UploadComprovante({
   inscricaoId,
   inscricaoNome,
+  nomeConvidado,
   whatsapp,
 }: {
   inscricaoId: string
   inscricaoNome: string
+  nomeConvidado?: string | null
   whatsapp: string
 }) {
   const [uploading, setUploading] = useState(false)
@@ -251,7 +254,7 @@ function UploadComprovante({
         {whatsapp && (
           <WhatsAppButton
             numero={whatsapp}
-            mensagem={`Olá! Enviei o comprovante da minha inscrição.\n\nNome: ${inscricaoNome}\nInscrição: ${inscricaoId}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricaoId}/comprovante`}
+            mensagem={`Olá! Enviei o comprovante da minha inscrição.\n\nNome: ${inscricaoNome}\nConvidado: ${nomeConvidado ? `Sim - ${nomeConvidado}` : 'Não'}\nInscrição: ${inscricaoId}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricaoId}/comprovante`}
           />
         )}
       </div>
