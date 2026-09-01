@@ -42,9 +42,7 @@ export default function CartaoCreditoNotice({
             ? 'o prazo chegou ao fim e todas as vagas já foram preenchidas.'
             : vagasEsgotadas
               ? 'todas as vagas já foram preenchidas.'
-              : 'o prazo chegou ao fim.'}{' '}
-          Para outras formas de pagamento, fale com <strong>{nome}</strong> no{' '}
-          <strong>{contato}</strong>.
+              : 'o prazo chegou ao fim.'}
         </>
       ) : (
         <>
