@@ -1,8 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import WhatsAppButton from '@/components/public/whatsapp-button'
-import UploadComprovantePublic from '@/components/public/upload-comprovante'
 
 interface Inscricao {
   id: string
@@ -214,7 +213,37 @@ function UploadComprovante({
   nomeConvidado?: string | null
   whatsapp: string
 }) {
+  const [uploading, setUploading] = useState(false)
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  async function handleUpload() {
+    const file = fileRef.current?.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    setError('')
+
+    const formData = new FormData()
+    formData.append('comprovante', file)
+
+    const res = await fetch(`/api/inscricoes/${inscricaoId}/comprovante`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = res.headers.get('content-type')?.includes('application/json')
+      ? await res.json()
+      : { error: 'Erro ao enviar' }
+
+    if (res.ok) {
+      setSent(true)
+    } else {
+      setError(data.error || 'Erro ao enviar')
+    }
+    setUploading(false)
+  }
 
   if (sent) {
     return (
@@ -237,10 +266,24 @@ function UploadComprovante({
       <p className="text-sm font-medium text-gray-700">
         Envie o comprovante de pagamento:
       </p>
-      <UploadComprovantePublic
-        inscricaoId={inscricaoId}
-        onUploaded={() => setSent(true)}
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,application/pdf"
+        className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-primary-light"
       />
+      <p className="mt-1 text-xs text-gray-400">
+        JPG, PNG, WebP ou PDF. Máximo 5MB.
+      </p>
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      <button
+        type="button"
+        onClick={handleUpload}
+        disabled={uploading}
+        className="mt-3 rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50 transition-colors"
+      >
+        {uploading ? 'Enviando...' : 'Enviar comprovante'}
+      </button>
     </div>
   )
 }
