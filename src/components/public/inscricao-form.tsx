@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { generatePixPayload } from '@/lib/pix'
+import WhatsAppButton from '@/components/public/whatsapp-button'
 
 interface Lote {
   id: string
@@ -29,6 +30,7 @@ interface InscricaoFormProps {
   cidade?: string
   pix?: string
   contatoCartao?: string
+  whatsapp?: string
   inscricaoInicio?: string | null
   inscricaoFim?: string | null
 }
@@ -44,6 +46,7 @@ export default function InscricaoForm({
   cidade = 'Sao Paulo',
   pix = '',
   contatoCartao = '',
+  whatsapp = '',
   inscricaoInicio,
   inscricaoFim,
 }: InscricaoFormProps) {
@@ -130,6 +133,14 @@ export default function InscricaoForm({
           Seu comprovante foi enviado com sucesso. Aguarde a confirmação do
           admin.
         </p>
+        {whatsapp && inscricao && (
+          <div className="mt-4">
+            <WhatsAppButton
+              numero={whatsapp}
+              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.\n\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
+            />
+          </div>
+        )}
         <a
           href="/inscricoes/acompanhar"
           className="mt-3 inline-block text-sm font-medium text-primary hover:underline"

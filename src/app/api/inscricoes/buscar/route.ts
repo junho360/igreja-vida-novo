@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { getConfig } from '@/lib/configuracoes'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -8,6 +9,8 @@ export async function GET(request: Request) {
   if (!email) {
     return NextResponse.json({ error: 'Email obrigatório' }, { status: 400 })
   }
+
+  const whatsapp = await getConfig('whatsapp_inscricoes')
 
   const inscricoes = await prisma.inscricao.findMany({
     where: { email: email.toLowerCase().trim() },
@@ -33,5 +36,5 @@ export async function GET(request: Request) {
     },
   }))
 
-  return NextResponse.json(result)
+  return NextResponse.json({ inscricoes: result, whatsapp })
 }

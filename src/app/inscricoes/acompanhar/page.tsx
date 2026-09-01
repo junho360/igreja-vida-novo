@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import WhatsAppButton from '@/components/public/whatsapp-button'
 
 interface Inscricao {
   id: string
@@ -31,6 +32,7 @@ export default function AcompanharInscricoes() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [inscricoes, setInscricoes] = useState<Inscricao[]>([])
+  const [whatsapp, setWhatsapp] = useState('')
 
   const fetchInscricoes = useCallback(async (searchEmail: string) => {
     const res = await fetch(
@@ -38,7 +40,8 @@ export default function AcompanharInscricoes() {
     )
     if (res.ok) {
       const data = await res.json()
-      setInscricoes(data)
+      setInscricoes(data.inscricoes ?? [])
+      setWhatsapp(data.whatsapp ?? '')
     }
   }, [])
 
@@ -60,8 +63,9 @@ export default function AcompanharInscricoes() {
     const data = await res.json()
 
     if (res.ok) {
-      setInscricoes(data)
-      if (data.length === 0)
+      setInscricoes(data.inscricoes ?? [])
+      setWhatsapp(data.whatsapp ?? '')
+      if (data.inscricoes?.length === 0)
         setError('Nenhuma inscrição encontrada para este email.')
     } else {
       setError(data.error || 'Erro ao buscar')
@@ -176,7 +180,11 @@ export default function AcompanharInscricoes() {
                     >
                       Copiar chave
                     </button>
-                    <UploadComprovante inscricaoId={insc.id} />
+                    <UploadComprovante
+                      inscricaoId={insc.id}
+                      inscricaoNome={insc.nome}
+                      whatsapp={whatsapp}
+                    />
                   </div>
                 )}
             </div>
@@ -187,7 +195,15 @@ export default function AcompanharInscricoes() {
   )
 }
 
-function UploadComprovante({ inscricaoId }: { inscricaoId: string }) {
+function UploadComprovante({
+  inscricaoId,
+  inscricaoNome,
+  whatsapp,
+}: {
+  inscricaoId: string
+  inscricaoNome: string
+  whatsapp: string
+}) {
   const [uploading, setUploading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
@@ -222,9 +238,17 @@ function UploadComprovante({ inscricaoId }: { inscricaoId: string }) {
 
   if (sent) {
     return (
-      <p className="mt-3 text-sm text-green-600">
-        Comprovante enviado com sucesso! Aguarde a confirmação.
-      </p>
+      <div className="mt-3 space-y-2">
+        <p className="text-sm text-green-600">
+          Comprovante enviado com sucesso! Aguarde a confirmação.
+        </p>
+        {whatsapp && (
+          <WhatsAppButton
+            numero={whatsapp}
+            mensagem={`Olá! Enviei o comprovante da minha inscrição.\n\nNome: ${inscricaoNome}\nInscrição: ${inscricaoId}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricaoId}/comprovante`}
+          />
+        )}
+      </div>
     )
   }
 
