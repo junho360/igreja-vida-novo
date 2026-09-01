@@ -30,6 +30,7 @@ interface InscricaoFormProps {
   cidade?: string
   pix?: string
   contatoCartao?: string
+  contatoCartaoNome?: string
   whatsapp?: string
   inscricaoInicio?: string | null
   inscricaoFim?: string | null
@@ -46,6 +47,7 @@ export default function InscricaoForm({
   cidade = 'Sao Paulo',
   pix = '',
   contatoCartao = '',
+  contatoCartaoNome = '',
   whatsapp = '',
   inscricaoInicio,
   inscricaoFim,
@@ -175,7 +177,12 @@ export default function InscricaoForm({
             </p>
             {contatoCartao && (
               <p className="mt-3 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">
-                Você também pode pagar no cartão de crédito. Entre em contato:{' '}
+                Você também pode pagar no cartão de crédito. Entre em contato{' '}
+                {contatoCartaoNome && (
+                  <>
+                    com <strong>{contatoCartaoNome}</strong>:{' '}
+                  </>
+                )}
                 <strong>{contatoCartao}</strong>
               </p>
             )}

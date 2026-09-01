@@ -1158,6 +1158,11 @@ async function main() {
       descricao: 'Contato para pagamento em cartão de crédito',
     },
     {
+      chave: 'contato_cartao_nome',
+      valor: '',
+      descricao: 'Nome da pessoa que recebe os pagamentos em cartão de crédito',
+    },
+    {
       chave: 'whatsapp_inscricoes',
       valor: '',
       descricao: 'WhatsApp para receber comprovantes de inscrição',
