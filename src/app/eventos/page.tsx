@@ -112,6 +112,19 @@ export default async function EventosPage() {
                   </p>
                 )
               )}
+              {cfg.contato_cartao && (
+                <p className="mt-3 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">
+                  Pagamento no cartão de crédito? Fale com{' '}
+                  {cfg.contato_cartao_nome ? (
+                    <>
+                      <strong>{cfg.contato_cartao_nome}</strong>:{' '}
+                      <strong>{cfg.contato_cartao}</strong>
+                    </>
+                  ) : (
+                    <strong>{cfg.contato_cartao}</strong>
+                  )}
+                </p>
+              )}
               <div className="mt-4">
                 <InscricaoForm
                   eventoId={evento.id}
@@ -121,8 +134,6 @@ export default async function EventosPage() {
                   nomeIgreja={cfg.nome_igreja}
                   cidade={cfg.cidade}
                   pix={cfg.pix_inscricao || cfg.pix}
-                  contatoCartao={cfg.contato_cartao}
-                  contatoCartaoNome={cfg.contato_cartao_nome}
                   whatsapp={cfg.whatsapp_inscricoes}
                   inscricaoInicio={evento.inscricaoInicio?.toISOString()}
                   inscricaoFim={evento.inscricaoFim?.toISOString()}
