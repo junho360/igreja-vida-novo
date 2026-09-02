@@ -27,27 +27,34 @@ export default function CartaoCreditoNotice({
   }, [eventoId])
 
   const now = new Date()
+  const inicio = inscricaoInicio ? new Date(inscricaoInicio) : null
   const fim = inscricaoFim ? new Date(inscricaoFim) : null
+  const aindaNaoAberta = inicio ? now < inicio : false
   const encerradaPorData = fim ? now > fim : false
   const encerrada = encerradaPorData || vagasEsgotadas || false
+  const aberta = !aindaNaoAberta && !encerrada
 
   const nome = contatoNome || 'o responsável'
 
   return (
     <p className="mt-3 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">
-      {encerrada ? (
-        <>
-          As inscrições para este evento foram encerradas:{' '}
-          {encerradaPorData && vagasEsgotadas
-            ? 'o prazo chegou ao fim e todas as vagas já foram preenchidas.'
-            : vagasEsgotadas
-              ? 'todas as vagas já foram preenchidas.'
-              : 'o prazo chegou ao fim.'}
-        </>
-      ) : (
+      {aberta ? (
         <>
           Você também pode pagar no cartão de crédito! Para combinar, é só
           chamar <strong>{nome}</strong> no <strong>{contato}</strong>.
+        </>
+      ) : (
+        <>
+          As inscrições para este evento{' '}
+          {aindaNaoAberta ? 'ainda não abriram' : 'foram encerradas'}
+          {encerrada ? ':' : '.'}{' '}
+          {encerradaPorData && vagasEsgotadas
+            ? 'O prazo chegou ao fim e todas as vagas já foram preenchidas.'
+            : vagasEsgotadas
+              ? 'Todas as vagas já foram preenchidas.'
+              : encerradaPorData
+                ? 'O prazo chegou ao fim.'
+                : ''}
         </>
       )}
     </p>
