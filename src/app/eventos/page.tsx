@@ -76,28 +76,6 @@ export default async function EventosPage() {
               {evento.descricao && (
                 <p className="mt-3 text-sm text-gray-600">{evento.descricao}</p>
               )}
-              {evento.inscricaoInicio && (
-                <p className="mt-2 text-xs text-gray-500">
-                  Inscrições:{' '}
-                  {evento.inscricaoInicio.toLocaleDateString('pt-BR')} às{' '}
-                  {evento.inscricaoInicio.toLocaleTimeString('pt-BR', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                  {evento.inscricaoFim && (
-                    <>
-                      {' '}
-                      até {evento.inscricaoFim.toLocaleDateString(
-                        'pt-BR'
-                      )} às{' '}
-                      {evento.inscricaoFim.toLocaleTimeString('pt-BR', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </>
-                  )}
-                </p>
-              )}
               {evento.valorComConvidado != null &&
               evento.valorSemConvidado != null ? (
                 <p className="mt-2 text-sm font-semibold text-primary">

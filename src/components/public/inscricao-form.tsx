@@ -241,6 +241,22 @@ export default function InscricaoForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {(inicio || fim) && (
+        <p className="text-xs text-gray-500">
+          Inscrições:{' '}
+          {inicio &&
+            `${inicio.toLocaleDateString('pt-BR')} às ${inicio.toLocaleTimeString(
+              'pt-BR',
+              { hour: '2-digit', minute: '2-digit' }
+            )}`}
+          {inicio && fim && ' até '}
+          {fim &&
+            `${fim.toLocaleDateString('pt-BR')} às ${fim.toLocaleTimeString(
+              'pt-BR',
+              { hour: '2-digit', minute: '2-digit' }
+            )}`}
+        </p>
+      )}
       {temDoisValores ? (
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-700">
