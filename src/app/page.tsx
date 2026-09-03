@@ -56,49 +56,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {destaques.length > 0 && (
-        <section className="bg-gray-50 py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-foreground">Destaques</h2>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {destaques.map((destaque) => (
-                <div
-                  key={destaque.id}
-                  className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md"
-                >
-                  <div className="h-1 bg-accent" />
-                  <div className="p-6">
-                    {destaque.icone && (
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-2xl">
-                        {destaque.icone}
-                      </span>
-                    )}
-                    <h3
-                      className={`text-lg font-semibold text-primary ${destaque.icone ? 'mt-4' : ''}`}
-                    >
-                      {destaque.titulo}
-                    </h3>
-                    {destaque.subtitulo && (
-                      <p className="mt-2 text-sm text-gray-500">
-                        {destaque.subtitulo}
-                      </p>
-                    )}
-                    {(destaque.horario || destaque.local) && (
-                      <div className="mt-4 space-y-1 text-sm text-gray-600">
-                        {destaque.horario && (
-                          <p className="font-medium">{destaque.horario}</p>
-                        )}
-                        {destaque.local && <p>{destaque.local}</p>}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-foreground">
@@ -153,6 +110,49 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {destaques.length > 0 && (
+        <section className="bg-gray-50 py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl font-bold text-foreground">Destaques</h2>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {destaques.map((destaque) => (
+                <div
+                  key={destaque.id}
+                  className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <div className="h-1 bg-accent" />
+                  <div className="p-6">
+                    {destaque.icone && (
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-2xl">
+                        {destaque.icone}
+                      </span>
+                    )}
+                    <h3
+                      className={`text-lg font-semibold text-primary ${destaque.icone ? 'mt-4' : ''}`}
+                    >
+                      {destaque.titulo}
+                    </h3>
+                    {destaque.subtitulo && (
+                      <p className="mt-2 text-sm text-gray-500">
+                        {destaque.subtitulo}
+                      </p>
+                    )}
+                    {(destaque.horario || destaque.local) && (
+                      <div className="mt-4 space-y-1 text-sm text-gray-600">
+                        {destaque.horario && (
+                          <p className="font-medium">{destaque.horario}</p>
+                        )}
+                        {destaque.local && <p>{destaque.local}</p>}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="bg-gray-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
