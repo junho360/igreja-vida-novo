@@ -62,6 +62,7 @@ export default function InscricaoForm({
     nomeConvidado: '',
   })
   const [lotesData, setLotesData] = useState<LotesResponse | null>(null)
+  const [copiouPix, setCopiouPix] = useState(false)
 
   const now = new Date()
   const inicio = inscricaoInicio ? new Date(inscricaoInicio) : null
@@ -181,10 +182,14 @@ export default function InscricaoForm({
               </p>
               <button
                 type="button"
-                onClick={() => navigator.clipboard.writeText(pixPayload)}
+                onClick={async () => {
+                  await navigator.clipboard.writeText(pixPayload)
+                  setCopiouPix(true)
+                  setTimeout(() => setCopiouPix(false), 2500)
+                }}
                 className="mt-3 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-light transition-colors"
               >
-                Copiar chave PIX
+                {copiouPix ? '✓ Chave copiada!' : 'Copiar chave PIX'}
               </button>
             </div>
           </>
