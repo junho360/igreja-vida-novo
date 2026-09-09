@@ -52,7 +52,7 @@ export default function InscricaoForm({
 }: InscricaoFormProps) {
   const [step, setStep] = useState<Step>('form')
   const [loading, setLoading] = useState(false)
-  const [temConvidado, setTemConvidado] = useState(false)
+  const [temConvidado, setTemConvidado] = useState<boolean | null>(null)
   const [pagamento, setPagamento] = useState<'pix' | 'especie'>('especie')
   const [inscricao, setInscricao] = useState<{
     id: string
@@ -66,6 +66,7 @@ export default function InscricaoForm({
   })
   const [lotesData, setLotesData] = useState<LotesResponse | null>(null)
   const [copiouPix, setCopiouPix] = useState(false)
+  const [erroSelecao, setErroSelecao] = useState('')
 
   const now = new Date()
   const inicio = inscricaoInicio ? new Date(inscricaoInicio) : null
@@ -105,15 +106,23 @@ export default function InscricaoForm({
   const loteAtual = lotesData?.loteDisponivel
   const temDoisValores = valorComConvidado != null && valorSemConvidado != null
   const valorFinal = temDoisValores
-    ? temConvidado
-      ? valorComConvidado!
-      : valorSemConvidado!
+    ? temConvidado === null
+      ? 0
+      : temConvidado
+        ? valorComConvidado!
+        : valorSemConvidado!
     : loteAtual
       ? loteAtual.valor
       : valor
+  const selecaoPendente = temDoisValores && temConvidado === null
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (selecaoPendente) {
+      setErroSelecao('Selecione a forma de inscrição (individual ou dupla).')
+      return
+    }
+    setErroSelecao('')
     setLoading(true)
 
     const res = await fetch('/api/inscricoes', {
@@ -122,7 +131,7 @@ export default function InscricaoForm({
       body: JSON.stringify({
         ...form,
         eventoId,
-        temConvidado,
+        temConvidado: temConvidado === true,
         loteId: temDoisValores ? null : (loteAtual?.id ?? null),
       }),
     })
@@ -317,7 +326,7 @@ export default function InscricaoForm({
             <input
               type="radio"
               name="temConvidado"
-              checked={!temConvidado}
+              checked={temConvidado === false}
               onChange={() => setTemConvidado(false)}
               className="h-4 w-4 accent-primary"
             />
@@ -330,7 +339,7 @@ export default function InscricaoForm({
             <input
               type="radio"
               name="temConvidado"
-              checked={temConvidado}
+              checked={temConvidado === true}
               onChange={() => setTemConvidado(true)}
               className="h-4 w-4 accent-primary"
             />
@@ -339,6 +348,7 @@ export default function InscricaoForm({
               {valorComConvidado!.toFixed(2)}
             </span>
           </label>
+          {erroSelecao && <p className="text-sm text-red-600">{erroSelecao}</p>}
           {temConvidado && (
             <div className="ml-1">
               <label
@@ -462,9 +472,11 @@ export default function InscricaoForm({
       >
         {loading
           ? 'Inscrevendo...'
-          : valorFinal > 0
-            ? `Inscrever - R$ ${valorFinal.toFixed(2)}`
-            : 'Inscrever-se (Gratuito)'}
+          : temDoisValores && temConvidado === null
+            ? 'Inscrever-se'
+            : valorFinal > 0
+              ? `Inscrever - R$ ${valorFinal.toFixed(2)}`
+              : 'Inscrever-se (Gratuito)'}
       </button>
     </form>
   )
