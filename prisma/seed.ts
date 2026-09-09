@@ -1168,6 +1168,11 @@ async function main() {
       descricao: 'WhatsApp para receber comprovantes de inscrição',
     },
     {
+      chave: 'whatsapp_especie',
+      valor: '',
+      descricao: 'WhatsApp para avisar sobre pagamento em espécie',
+    },
+    {
       chave: 'instagram',
       valor: '@igrejavida',
       descricao: 'Perfil do Instagram',

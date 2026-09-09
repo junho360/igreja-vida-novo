@@ -30,6 +30,7 @@ interface InscricaoFormProps {
   cidade?: string
   pix?: string
   whatsapp?: string
+  whatsappEspecie?: string
   inscricaoInicio?: string | null
   inscricaoFim?: string | null
 }
@@ -45,6 +46,7 @@ export default function InscricaoForm({
   cidade = 'Sao Paulo',
   pix = '',
   whatsapp = '',
+  whatsappEspecie = '',
   inscricaoInicio,
   inscricaoFim,
 }: InscricaoFormProps) {
@@ -192,6 +194,24 @@ export default function InscricaoForm({
                 {copiouPix ? '✓ Chave copiada!' : 'Copiar chave PIX'}
               </button>
             </div>
+            {whatsappEspecie && (
+              <div className="mt-6 border-t border-gray-200 pt-4">
+                <p className="text-sm font-medium text-gray-700">
+                  Prefere pagar em espécie?
+                </p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Você pode pagar o valor de R${' '}
+                  <strong>{inscricao.valor.toFixed(2)}</strong> em dinheiro.
+                  Avisa pra gente pelo WhatsApp que combinamos:
+                </p>
+                <div className="mt-3">
+                  <WhatsAppButton
+                    numero={whatsappEspecie}
+                    mensagem={`Olá! Gostaria de pagar minha inscrição ${inscricao.id} em espécie.\n\nNome: ${form.nome}${form.nomeConvidado ? `\nConvidado: ${form.nomeConvidado}` : ''}\nValor: R$ ${inscricao.valor.toFixed(2)}`}
+                  />
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <p className="mt-2 text-sm text-gray-600">

@@ -21,6 +21,7 @@ export default async function EventosPage() {
       'contato_cartao',
       'contato_cartao_nome',
       'whatsapp_inscricoes',
+      'whatsapp_especie',
     ]),
   ])
 
@@ -110,6 +111,7 @@ export default async function EventosPage() {
                   cidade={cfg.cidade}
                   pix={cfg.pix_inscricao || cfg.pix}
                   whatsapp={cfg.whatsapp_inscricoes}
+                  whatsappEspecie={cfg.whatsapp_especie}
                   inscricaoInicio={evento.inscricaoInicio?.toISOString()}
                   inscricaoFim={evento.inscricaoFim?.toISOString()}
                 />
