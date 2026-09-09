@@ -35,7 +35,7 @@ interface InscricaoFormProps {
   inscricaoFim?: string | null
 }
 
-type Step = 'form' | 'pix' | 'enviado'
+type Step = 'form' | 'pix' | 'especie' | 'enviado'
 
 export default function InscricaoForm({
   eventoId,
@@ -53,6 +53,7 @@ export default function InscricaoForm({
   const [step, setStep] = useState<Step>('form')
   const [loading, setLoading] = useState(false)
   const [temConvidado, setTemConvidado] = useState(false)
+  const [pagamento, setPagamento] = useState<'pix' | 'especie'>('pix')
   const [inscricao, setInscricao] = useState<{
     id: string
     valor: number
@@ -129,7 +130,11 @@ export default function InscricaoForm({
     const data = await res.json()
     if (res.ok) {
       setInscricao(data)
-      setStep('pix')
+      if (pagamento === 'especie' && whatsappEspecie) {
+        setStep('especie')
+      } else {
+        setStep('pix')
+      }
     }
     setLoading(false)
   }
@@ -155,6 +160,45 @@ export default function InscricaoForm({
         <a
           href="/inscricoes/acompanhar"
           className="mt-3 inline-block text-sm font-medium text-primary hover:underline"
+        >
+          Acompanhar sua inscrição →
+        </a>
+      </div>
+    )
+  }
+
+  if (step === 'especie' && inscricao) {
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-foreground">
+          Inscrição realizada!
+        </h3>
+        <p className="mt-2 text-sm text-gray-600">
+          Você escolheu pagar em espécie, no valor de{' '}
+          <strong>R$ {inscricao.valor.toFixed(2)}</strong>.
+        </p>
+        {whatsappEspecie ? (
+          <>
+            <p className="mt-2 text-sm text-gray-600">
+              Agora é só avisar a gente pelo WhatsApp para combinarmos a forma
+              de pagamento:
+            </p>
+            <div className="mt-3">
+              <WhatsAppButton
+                numero={whatsappEspecie}
+                mensagem={`Olá! Fiz a inscrição ${inscricao.id} e gostaria de pagar em espécie.\n\nNome: ${form.nome}${form.nomeConvidado ? `\nConvidado: ${form.nomeConvidado}` : ''}\nValor: R$ ${inscricao.valor.toFixed(2)}`}
+                texto={`Avisar no WhatsApp (R$ ${inscricao.valor.toFixed(2)})`}
+              />
+            </div>
+          </>
+        ) : (
+          <p className="mt-3 rounded-md bg-yellow-50 px-3 py-2 text-sm text-yellow-800">
+            Em breve entraremos em contato para combinar o pagamento em espécie.
+          </p>
+        )}
+        <a
+          href="/inscricoes/acompanhar"
+          className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
         >
           Acompanhar sua inscrição →
         </a>
@@ -194,24 +238,6 @@ export default function InscricaoForm({
                 {copiouPix ? '✓ Chave copiada!' : 'Copiar chave PIX'}
               </button>
             </div>
-            {whatsappEspecie && (
-              <div className="mt-6 border-t border-gray-200 pt-4">
-                <p className="text-sm font-medium text-gray-700">
-                  Prefere pagar em espécie?
-                </p>
-                <p className="mt-1 text-xs text-gray-500">
-                  Você pode pagar o valor de R${' '}
-                  <strong>{inscricao.valor.toFixed(2)}</strong> em dinheiro.
-                  Avisa pra gente pelo WhatsApp que combinamos:
-                </p>
-                <div className="mt-3">
-                  <WhatsAppButton
-                    numero={whatsappEspecie}
-                    mensagem={`Olá! Gostaria de pagar minha inscrição ${inscricao.id} em espécie.\n\nNome: ${form.nome}${form.nomeConvidado ? `\nConvidado: ${form.nomeConvidado}` : ''}\nValor: R$ ${inscricao.valor.toFixed(2)}`}
-                  />
-                </div>
-              </div>
-            )}
           </>
         ) : (
           <p className="mt-2 text-sm text-gray-600">
@@ -358,6 +384,38 @@ export default function InscricaoForm({
             </p>
           </div>
         )
+      )}
+
+      {valorFinal > 0 && (
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-gray-700">
+            Forma de pagamento
+          </p>
+          <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <input
+              type="radio"
+              name="pagamento"
+              checked={pagamento === 'pix'}
+              onChange={() => setPagamento('pix')}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="text-sm text-gray-700">PIX</span>
+          </label>
+          {whatsappEspecie && (
+            <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+              <input
+                type="radio"
+                name="pagamento"
+                checked={pagamento === 'especie'}
+                onChange={() => setPagamento('especie')}
+                className="h-4 w-4 accent-primary"
+              />
+              <span className="text-sm text-gray-700">
+                Pagamento em espécie (dinheiro)
+              </span>
+            </label>
+          )}
+        </div>
       )}
 
       <div>
