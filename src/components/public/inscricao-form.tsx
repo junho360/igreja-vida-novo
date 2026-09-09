@@ -115,6 +115,8 @@ export default function InscricaoForm({
       ? loteAtual.valor
       : valor
   const selecaoPendente = temDoisValores && temConvidado === null
+  const temValorPago =
+    temDoisValores || valor > 0 || (lotesData?.lotes.length ?? 0) > 0
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -139,7 +141,7 @@ export default function InscricaoForm({
     const data = await res.json()
     if (res.ok) {
       setInscricao(data)
-      if (pagamento === 'especie' && whatsappEspecie) {
+      if (pagamento === 'especie') {
         setStep('especie')
       } else {
         setStep('pix')
@@ -396,24 +398,28 @@ export default function InscricaoForm({
         )
       )}
 
-      {valorFinal > 0 && (
+      {temValorPago && (
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-700">
             Forma de pagamento
           </p>
-          {whatsappEspecie && (
-            <label className="flex items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3">
-              <input
-                type="radio"
-                name="pagamento"
-                checked={pagamento === 'especie'}
-                onChange={() => setPagamento('especie')}
-                className="h-4 w-4 accent-primary"
-              />
-              <span className="text-sm text-gray-700">
-                Pagamento em espécie (dinheiro)
-              </span>
-            </label>
+          <label className="flex items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3">
+            <input
+              type="radio"
+              name="pagamento"
+              checked={pagamento === 'especie'}
+              onChange={() => setPagamento('especie')}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="text-sm text-gray-700">
+              Pagamento em espécie (dinheiro)
+            </span>
+          </label>
+          {!whatsappEspecie && (
+            <p className="text-xs text-gray-500">
+              Assim que confirmar, entraremos em contato para combinar o
+              pagamento.
+            </p>
           )}
         </div>
       )}
