@@ -31,11 +31,13 @@ interface InscricaoFormProps {
   pix?: string
   whatsapp?: string
   whatsappEspecie?: string
+  contatoCartao?: string
+  contatoCartaoNome?: string
   inscricaoInicio?: string | null
   inscricaoFim?: string | null
 }
 
-type Step = 'form' | 'pix' | 'especie' | 'enviado'
+type Step = 'form' | 'pix' | 'especie' | 'cartao' | 'enviado'
 
 export default function InscricaoForm({
   eventoId,
@@ -47,17 +49,22 @@ export default function InscricaoForm({
   pix = '',
   whatsapp = '',
   whatsappEspecie = '',
+  contatoCartao = '',
+  contatoCartaoNome = '',
   inscricaoInicio,
   inscricaoFim,
 }: InscricaoFormProps) {
   const [step, setStep] = useState<Step>('form')
   const [loading, setLoading] = useState(false)
-  const [opcao, setOpcao] = useState<'individual' | 'dupla' | 'especie' | null>(
-    null
-  )
+  const [opcao, setOpcao] = useState<
+    'individual' | 'dupla' | 'especie' | 'cartao' | null
+  >(null)
   const [especieValor, setEspecieValor] = useState<
     'individual' | 'dupla' | null
   >(null)
+  const [cartaoValor, setCartaoValor] = useState<'individual' | 'dupla' | null>(
+    null
+  )
   const [pagamento, setPagamento] = useState<'pix' | 'especie'>('pix')
   const [inscricao, setInscricao] = useState<{
     id: string
@@ -114,13 +121,17 @@ export default function InscricaoForm({
   const pagamentoEfetivo = temDoisValores
     ? opcao === 'especie'
       ? 'especie'
-      : opcao === 'individual' || opcao === 'dupla'
-        ? 'pix'
-        : null
+      : opcao === 'cartao'
+        ? 'cartao'
+        : opcao === 'individual' || opcao === 'dupla'
+          ? 'pix'
+          : null
     : pagamento
 
   const temConvidadoFinal = temDoisValores
-    ? opcao === 'dupla' || (opcao === 'especie' && especieValor === 'dupla')
+    ? opcao === 'dupla' ||
+      (opcao === 'especie' && especieValor === 'dupla') ||
+      (opcao === 'cartao' && cartaoValor === 'dupla')
     : false
 
   const valorFinal = temDoisValores
@@ -134,7 +145,13 @@ export default function InscricaoForm({
             : especieValor === 'individual'
               ? valorSemConvidado!
               : 0
-          : 0
+          : opcao === 'cartao'
+            ? cartaoValor === 'dupla'
+              ? valorComConvidado!
+              : cartaoValor === 'individual'
+                ? valorSemConvidado!
+                : 0
+            : 0
     : loteAtual
       ? loteAtual.valor
       : valor
@@ -146,7 +163,7 @@ export default function InscricaoForm({
     e.preventDefault()
     if (temDoisValores && opcao === null) {
       setErroSelecao(
-        'Selecione uma opção: inscrição individual, dupla ou pagamento em espécie.'
+        'Selecione uma opção: inscrição individual, dupla, pagamento em espécie ou cartão de crédito.'
       )
       return
     }
@@ -154,10 +171,19 @@ export default function InscricaoForm({
       setErroSelecao('Escolha o valor da inscrição em espécie.')
       return
     }
+    if (opcao === 'cartao' && cartaoValor === null) {
+      setErroSelecao('Escolha o valor da inscrição no cartão.')
+      return
+    }
     setErroSelecao('')
     setLoading(true)
 
-    const finalPagamento = pagamentoEfetivo === 'especie' ? 'especie' : 'pix'
+    const finalPagamento =
+      pagamentoEfetivo === 'especie'
+        ? 'especie'
+        : pagamentoEfetivo === 'cartao'
+          ? 'cartao'
+          : 'pix'
 
     const res = await fetch('/api/inscricoes', {
       method: 'POST',
@@ -175,6 +201,8 @@ export default function InscricaoForm({
       setInscricao(data)
       if (finalPagamento === 'especie') {
         setStep('especie')
+      } else if (finalPagamento === 'cartao') {
+        setStep('cartao')
       } else {
         setStep('pix')
       }
@@ -237,6 +265,45 @@ export default function InscricaoForm({
         ) : (
           <p className="mt-3 rounded-md bg-yellow-50 px-3 py-2 text-sm text-yellow-800">
             Em breve entraremos em contato para combinar o pagamento em espécie.
+          </p>
+        )}
+        <a
+          href="/inscricoes/acompanhar"
+          className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+        >
+          Acompanhar sua inscrição →
+        </a>
+      </div>
+    )
+  }
+
+  if (step === 'cartao' && inscricao) {
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+        <h3 className="text-lg font-semibold text-foreground">
+          Inscrição realizada!
+        </h3>
+        <p className="mt-2 text-sm text-gray-600">
+          Você escolheu pagar no cartão de crédito, no valor de{' '}
+          <strong>R$ {inscricao.valor.toFixed(2)}</strong>.
+        </p>
+        {contatoCartao ? (
+          <>
+            <p className="mt-2 text-sm text-gray-600">
+              Agora é só avisar a gente pelo WhatsApp para combinarmos o
+              pagamento no cartão:
+            </p>
+            <div className="mt-3">
+              <WhatsAppButton
+                numero={contatoCartao}
+                mensagem={`Olá! Fiz a inscrição ${inscricao.id} e gostaria de pagar no cartão de crédito.\n\nNome: ${form.nome}${form.nomeConvidado ? `\nConvidado: ${form.nomeConvidado}` : ''}\nValor: R$ ${inscricao.valor.toFixed(2)}`}
+                texto={`Avisar no WhatsApp (R$ ${inscricao.valor.toFixed(2)})`}
+              />
+            </div>
+          </>
+        ) : (
+          <p className="mt-3 rounded-md bg-yellow-50 px-3 py-2 text-sm text-yellow-800">
+            Em breve entraremos em contato para combinar o pagamento no cartão.
           </p>
         )}
         <a
@@ -394,6 +461,20 @@ export default function InscricaoForm({
               Pagamento em espécie (dinheiro)
             </span>
           </label>
+          {contatoCartao && (
+            <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+              <input
+                type="radio"
+                name="opcao"
+                checked={opcao === 'cartao'}
+                onChange={() => setOpcao('cartao')}
+                className="h-4 w-4 accent-primary"
+              />
+              <span className="text-sm text-gray-700">
+                Pagamento no cartão de crédito
+              </span>
+            </label>
+          )}
           {opcao === 'especie' && (
             <div className="ml-1 space-y-2">
               <p className="text-sm font-medium text-gray-700">Valor</p>
@@ -429,9 +510,39 @@ export default function InscricaoForm({
               )}
             </div>
           )}
+          {opcao === 'cartao' && (
+            <div className="ml-1 space-y-2">
+              <p className="text-sm font-medium text-gray-700">Valor</p>
+              <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input
+                  type="radio"
+                  name="cartaoValor"
+                  checked={cartaoValor === 'individual'}
+                  onChange={() => setCartaoValor('individual')}
+                  className="h-4 w-4 accent-primary"
+                />
+                <span className="text-sm text-gray-700">
+                  Individual - R$ {valorSemConvidado!.toFixed(2)}
+                </span>
+              </label>
+              <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input
+                  type="radio"
+                  name="cartaoValor"
+                  checked={cartaoValor === 'dupla'}
+                  onChange={() => setCartaoValor('dupla')}
+                  className="h-4 w-4 accent-primary"
+                />
+                <span className="text-sm text-gray-700">
+                  Dupla - R$ {valorComConvidado!.toFixed(2)}
+                </span>
+              </label>
+            </div>
+          )}
           {erroSelecao && <p className="text-sm text-red-600">{erroSelecao}</p>}
           {(opcao === 'dupla' ||
-            (opcao === 'especie' && especieValor === 'dupla')) && (
+            (opcao === 'especie' && especieValor === 'dupla') ||
+            (opcao === 'cartao' && cartaoValor === 'dupla')) && (
             <div className="ml-1">
               <label
                 htmlFor="nomeConvidado"
@@ -552,7 +663,9 @@ export default function InscricaoForm({
         {loading
           ? 'Inscrevendo...'
           : temDoisValores &&
-              (opcao === null || (opcao === 'especie' && especieValor === null))
+              (opcao === null ||
+                (opcao === 'especie' && especieValor === null) ||
+                (opcao === 'cartao' && cartaoValor === null))
             ? 'Inscrever-se'
             : valorFinal > 0
               ? `Inscrever - R$ ${valorFinal.toFixed(2)}`
