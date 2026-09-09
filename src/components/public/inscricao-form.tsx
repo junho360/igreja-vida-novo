@@ -53,7 +53,7 @@ export default function InscricaoForm({
   const [step, setStep] = useState<Step>('form')
   const [loading, setLoading] = useState(false)
   const [temConvidado, setTemConvidado] = useState(false)
-  const [pagamento, setPagamento] = useState<'pix' | 'especie'>('pix')
+  const [pagamento, setPagamento] = useState<'pix' | 'especie'>('especie')
   const [inscricao, setInscricao] = useState<{
     id: string
     valor: number
@@ -391,18 +391,8 @@ export default function InscricaoForm({
           <p className="text-sm font-medium text-gray-700">
             Forma de pagamento
           </p>
-          <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-            <input
-              type="radio"
-              name="pagamento"
-              checked={pagamento === 'pix'}
-              onChange={() => setPagamento('pix')}
-              className="h-4 w-4 accent-primary"
-            />
-            <span className="text-sm text-gray-700">PIX</span>
-          </label>
           {whatsappEspecie && (
-            <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <label className="flex items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3">
               <input
                 type="radio"
                 name="pagamento"
