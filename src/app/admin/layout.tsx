@@ -16,6 +16,7 @@ const menuItems = [
   { href: '/admin/configuracoes', label: 'Configurações' },
   { href: '/admin/pedidos-oracao', label: 'Pedidos de Oração' },
   { href: '/admin/mensagens', label: 'Mensagens' },
+  { href: '/admin/trocar-senha', label: 'Trocar Senha' },
 ]
 
 export default function AdminLayout({
