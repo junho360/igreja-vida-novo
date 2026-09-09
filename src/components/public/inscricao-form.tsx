@@ -52,8 +52,13 @@ export default function InscricaoForm({
 }: InscricaoFormProps) {
   const [step, setStep] = useState<Step>('form')
   const [loading, setLoading] = useState(false)
-  const [temConvidado, setTemConvidado] = useState<boolean | null>(null)
-  const [pagamento, setPagamento] = useState<'pix' | 'especie'>('especie')
+  const [opcao, setOpcao] = useState<'individual' | 'dupla' | 'especie' | null>(
+    null
+  )
+  const [especieValor, setEspecieValor] = useState<
+    'individual' | 'dupla' | null
+  >(null)
+  const [pagamento, setPagamento] = useState<'pix' | 'especie'>('pix')
   const [inscricao, setInscricao] = useState<{
     id: string
     valor: number
@@ -105,27 +110,54 @@ export default function InscricaoForm({
 
   const loteAtual = lotesData?.loteDisponivel
   const temDoisValores = valorComConvidado != null && valorSemConvidado != null
+
+  const pagamentoEfetivo = temDoisValores
+    ? opcao === 'especie'
+      ? 'especie'
+      : opcao === 'individual' || opcao === 'dupla'
+        ? 'pix'
+        : null
+    : pagamento
+
+  const temConvidadoFinal = temDoisValores
+    ? opcao === 'dupla' || (opcao === 'especie' && especieValor === 'dupla')
+    : false
+
   const valorFinal = temDoisValores
-    ? temConvidado === null
-      ? 0
-      : temConvidado
+    ? opcao === 'individual'
+      ? valorSemConvidado!
+      : opcao === 'dupla'
         ? valorComConvidado!
-        : valorSemConvidado!
+        : opcao === 'especie'
+          ? especieValor === 'dupla'
+            ? valorComConvidado!
+            : especieValor === 'individual'
+              ? valorSemConvidado!
+              : 0
+          : 0
     : loteAtual
       ? loteAtual.valor
       : valor
-  const selecaoPendente = temDoisValores && temConvidado === null
+
   const temValorPago =
     temDoisValores || valor > 0 || (lotesData?.lotes.length ?? 0) > 0
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (selecaoPendente) {
-      setErroSelecao('Selecione a forma de inscrição (individual ou dupla).')
+    if (temDoisValores && opcao === null) {
+      setErroSelecao(
+        'Selecione uma opção: inscrição individual, dupla ou pagamento em espécie.'
+      )
+      return
+    }
+    if (opcao === 'especie' && especieValor === null) {
+      setErroSelecao('Escolha o valor da inscrição em espécie.')
       return
     }
     setErroSelecao('')
     setLoading(true)
+
+    const finalPagamento = pagamentoEfetivo === 'especie' ? 'especie' : 'pix'
 
     const res = await fetch('/api/inscricoes', {
       method: 'POST',
@@ -133,7 +165,7 @@ export default function InscricaoForm({
       body: JSON.stringify({
         ...form,
         eventoId,
-        temConvidado: temConvidado === true,
+        temConvidado: temConvidadoFinal,
         loteId: temDoisValores ? null : (loteAtual?.id ?? null),
       }),
     })
@@ -141,7 +173,7 @@ export default function InscricaoForm({
     const data = await res.json()
     if (res.ok) {
       setInscricao(data)
-      if (pagamento === 'especie') {
+      if (finalPagamento === 'especie') {
         setStep('especie')
       } else {
         setStep('pix')
@@ -322,36 +354,84 @@ export default function InscricaoForm({
       {temDoisValores ? (
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-700">
-            Forma de inscrição
+            Forma de inscrição e pagamento
           </p>
           <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
             <input
               type="radio"
-              name="temConvidado"
-              checked={temConvidado === false}
-              onChange={() => setTemConvidado(false)}
+              name="opcao"
+              checked={opcao === 'individual'}
+              onChange={() => setOpcao('individual')}
               className="h-4 w-4 accent-primary"
             />
             <span className="text-sm text-gray-700">
               Inscrição individual (sem convidado) - R${' '}
-              {valorSemConvidado!.toFixed(2)}
+              {valorSemConvidado!.toFixed(2)} (PIX)
             </span>
           </label>
           <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
             <input
               type="radio"
-              name="temConvidado"
-              checked={temConvidado === true}
-              onChange={() => setTemConvidado(true)}
+              name="opcao"
+              checked={opcao === 'dupla'}
+              onChange={() => setOpcao('dupla')}
               className="h-4 w-4 accent-primary"
             />
             <span className="text-sm text-gray-700">
               Inscrição dupla (com convidado - pessoa de fora da igreja) - R${' '}
-              {valorComConvidado!.toFixed(2)}
+              {valorComConvidado!.toFixed(2)} (PIX)
             </span>
           </label>
+          <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+            <input
+              type="radio"
+              name="opcao"
+              checked={opcao === 'especie'}
+              onChange={() => setOpcao('especie')}
+              className="h-4 w-4 accent-primary"
+            />
+            <span className="text-sm text-gray-700">
+              Pagamento em espécie (dinheiro)
+            </span>
+          </label>
+          {opcao === 'especie' && (
+            <div className="ml-1 space-y-2">
+              <p className="text-sm font-medium text-gray-700">Valor</p>
+              <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input
+                  type="radio"
+                  name="especieValor"
+                  checked={especieValor === 'individual'}
+                  onChange={() => setEspecieValor('individual')}
+                  className="h-4 w-4 accent-primary"
+                />
+                <span className="text-sm text-gray-700">
+                  Individual - R$ {valorSemConvidado!.toFixed(2)}
+                </span>
+              </label>
+              <label className="flex items-center gap-2 rounded-lg border border-gray-300 p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                <input
+                  type="radio"
+                  name="especieValor"
+                  checked={especieValor === 'dupla'}
+                  onChange={() => setEspecieValor('dupla')}
+                  className="h-4 w-4 accent-primary"
+                />
+                <span className="text-sm text-gray-700">
+                  Dupla - R$ {valorComConvidado!.toFixed(2)}
+                </span>
+              </label>
+              {!whatsappEspecie && (
+                <p className="text-xs text-gray-500">
+                  Assim que confirmar, entraremos em contato para combinar o
+                  pagamento.
+                </p>
+              )}
+            </div>
+          )}
           {erroSelecao && <p className="text-sm text-red-600">{erroSelecao}</p>}
-          {temConvidado && (
+          {(opcao === 'dupla' ||
+            (opcao === 'especie' && especieValor === 'dupla')) && (
             <div className="ml-1">
               <label
                 htmlFor="nomeConvidado"
@@ -398,30 +478,23 @@ export default function InscricaoForm({
         )
       )}
 
-      {temValorPago && (
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-700">
-            Forma de pagamento
-          </p>
-          <label className="flex items-center gap-2 rounded-lg border border-primary bg-primary/5 p-3">
-            <input
-              type="radio"
-              name="pagamento"
-              checked={pagamento === 'especie'}
-              onChange={() => setPagamento('especie')}
-              className="h-4 w-4 accent-primary"
-            />
-            <span className="text-sm text-gray-700">
-              Pagamento em espécie (dinheiro)
-            </span>
-          </label>
-          {!whatsappEspecie && (
-            <p className="text-xs text-gray-500">
-              Assim que confirmar, entraremos em contato para combinar o
-              pagamento.
-            </p>
-          )}
-        </div>
+      {!temDoisValores && temValorPago && pagamento === 'especie' && (
+        <button
+          type="button"
+          onClick={() => setPagamento('pix')}
+          className="text-sm text-primary hover:underline"
+        >
+          Pagar via PIX em vez de espécie
+        </button>
+      )}
+      {!temDoisValores && temValorPago && pagamento === 'pix' && (
+        <button
+          type="button"
+          onClick={() => setPagamento('especie')}
+          className="text-sm text-primary hover:underline"
+        >
+          Pagar em espécie (dinheiro)
+        </button>
       )}
 
       <div>
@@ -478,7 +551,8 @@ export default function InscricaoForm({
       >
         {loading
           ? 'Inscrevendo...'
-          : temDoisValores && temConvidado === null
+          : temDoisValores &&
+              (opcao === null || (opcao === 'especie' && especieValor === null))
             ? 'Inscrever-se'
             : valorFinal > 0
               ? `Inscrever - R$ ${valorFinal.toFixed(2)}`
