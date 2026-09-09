@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getConfigs } from '@/lib/configuracoes'
 import InscricaoForm from '@/components/public/inscricao-form'
-import CartaoCreditoNotice from '@/components/public/cartao-credito-notice'
 
 export const metadata = { title: 'Eventos - Igreja Vida' }
 
@@ -91,15 +90,6 @@ export default async function EventosPage() {
                     Valor: R$ {evento.valor.toFixed(2)}
                   </p>
                 )
-              )}
-              {cfg.contato_cartao && (
-                <CartaoCreditoNotice
-                  contato={cfg.contato_cartao}
-                  contatoNome={cfg.contato_cartao_nome}
-                  eventoId={evento.id}
-                  inscricaoInicio={evento.inscricaoInicio?.toISOString()}
-                  inscricaoFim={evento.inscricaoFim?.toISOString()}
-                />
               )}
               <div className="mt-4">
                 <InscricaoForm
