@@ -11,8 +11,8 @@ export default async function AdminEventosPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Eventos</h1>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">Eventos</h1>
         <Link
           href="/admin/eventos/novo"
           className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-light"
@@ -20,7 +20,7 @@ export default async function AdminEventosPage() {
           + Novo
         </Link>
       </div>
-      <div className="mt-6 overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200 bg-white">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>

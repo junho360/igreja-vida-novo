@@ -50,7 +50,7 @@ export default function InscricaoActions({
 
   return (
     <tr>
-      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+      <td className="px-4 py-4 text-sm font-medium text-gray-900 sm:px-6">
         {item.nome}
         {item.nomeConvidado && (
           <span className="block text-xs font-normal text-gray-500">
@@ -58,11 +58,13 @@ export default function InscricaoActions({
           </span>
         )}
       </td>
-      <td className="px-6 py-4 text-sm text-gray-500">{item.email}</td>
-      <td className="px-6 py-4 text-sm text-gray-500">
+      <td className="hidden px-4 py-4 text-sm text-gray-500 sm:table-cell sm:px-6">
+        {item.email}
+      </td>
+      <td className="hidden px-4 py-4 text-sm text-gray-500 md:table-cell sm:px-6">
         {item.telefone ?? '—'}
       </td>
-      <td className="px-6 py-4 text-sm text-gray-500">
+      <td className="px-4 py-4 text-sm text-gray-500 sm:px-6">
         {item.lote && (
           <span className="text-xs bg-primary/10 text-primary rounded px-1.5 py-0.5 mr-1">
             {item.lote.nome}
@@ -70,14 +72,14 @@ export default function InscricaoActions({
         )}
         {item.valor > 0 ? `R$ ${item.valor.toFixed(2)}` : 'Gratuito'}
       </td>
-      <td className="px-6 py-4 text-sm">
+      <td className="px-4 py-4 text-sm sm:px-6">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor[status] ?? 'bg-gray-100 text-gray-800'}`}
         >
           {statusLabel[status] ?? status}
         </span>
       </td>
-      <td className="px-6 py-4 text-sm">
+      <td className="px-4 py-4 text-sm sm:px-6">
         {item.comprovante ? (
           <a
             href={`/api/inscricoes/${item.id}/comprovante`}
@@ -91,7 +93,7 @@ export default function InscricaoActions({
           <span className="text-gray-400">—</span>
         )}
       </td>
-      <td className="px-6 py-4 text-right text-sm">
+      <td className="px-4 py-4 text-right text-sm sm:px-6">
         {status === 'pendente' && (
           <button
             type="button"

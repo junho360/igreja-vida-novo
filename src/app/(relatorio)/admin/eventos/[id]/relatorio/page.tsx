@@ -126,7 +126,7 @@ export default function RelatorioEventoPage() {
           </p>
         </div>
 
-        <div className="mb-6 grid grid-cols-3 gap-4 print:gap-2">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 print:gap-2">
           <div className="rounded border bg-gray-50 p-3 print:bg-white print:border-gray-300 text-center">
             <p className="text-xs text-gray-500">Pagos</p>
             <p className="text-xl font-bold text-green-700">{pagas.length}</p>
@@ -145,92 +145,94 @@ export default function RelatorioEventoPage() {
           </div>
         </div>
 
-        <table className="w-full border-collapse text-sm">
-          <thead>
-            <tr className="bg-gray-100 print:bg-gray-200">
-              <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
-                #
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
-                Nome
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
-                Email
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
-                Telefone
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
-                Lote
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
-                Valor
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-center text-xs font-bold uppercase">
-                Status
-              </th>
-              <th className="border border-gray-300 px-3 py-2 text-center text-xs font-bold uppercase print:w-16">
-                ✓
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtradas.map((item, idx) => (
-              <tr
-                key={item.id}
-                className={
-                  item.status === 'confirmado'
-                    ? 'bg-green-50/50 print:bg-green-50'
-                    : 'bg-yellow-50/50 print:bg-yellow-50'
-                }
-              >
-                <td className="border border-gray-300 px-3 py-2 text-gray-500">
-                  {idx + 1}
-                </td>
-                <td className="border border-gray-300 px-3 py-2 font-medium">
-                  {item.nome}
-                  {item.nomeConvidado && (
-                    <div className="text-xs font-normal text-gray-600">
-                      + convidado: {item.nomeConvidado}
-                    </div>
-                  )}
-                </td>
-                <td className="border border-gray-300 px-3 py-2 text-gray-600">
-                  {item.email}
-                </td>
-                <td className="border border-gray-300 px-3 py-2 text-gray-600">
-                  {item.telefone ?? '—'}
-                </td>
-                <td className="border border-gray-300 px-3 py-2 text-gray-600">
-                  {item.lote?.nome ?? '—'}
-                </td>
-                <td className="border border-gray-300 px-3 py-2">
-                  {item.valor > 0 ? `R$ ${item.valor.toFixed(2)}` : 'Grátis'}
-                </td>
-                <td className="border border-gray-300 px-3 py-2 text-center">
-                  <span
-                    className={`inline-block rounded-full px-2 py-0.5 text-xs font-bold ${
-                      item.status === 'confirmado'
-                        ? 'bg-green-200 text-green-800'
-                        : item.status === 'pendente'
-                          ? 'bg-yellow-200 text-yellow-800'
-                          : 'bg-red-200 text-red-800'
-                    }`}
-                  >
-                    {item.status === 'confirmado'
-                      ? 'PAGO'
-                      : item.status === 'pendente'
-                        ? 'PENDENTE'
-                        : 'CANCELADO'}
-                  </span>
-                </td>
-                <td className="border border-gray-300 px-3 py-2 text-center print:w-16">
-                  <span className="inline-block h-5 w-5 rounded border-2 border-gray-400" />
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-100 print:bg-gray-200">
+                <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
+                  #
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
+                  Nome
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
+                  Email
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
+                  Telefone
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
+                  Lote
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-left text-xs font-bold uppercase">
+                  Valor
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-center text-xs font-bold uppercase">
+                  Status
+                </th>
+                <th className="border border-gray-300 px-3 py-2 text-center text-xs font-bold uppercase print:w-16">
+                  ✓
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtradas.map((item, idx) => (
+                <tr
+                  key={item.id}
+                  className={
+                    item.status === 'confirmado'
+                      ? 'bg-green-50/50 print:bg-green-50'
+                      : 'bg-yellow-50/50 print:bg-yellow-50'
+                  }
+                >
+                  <td className="border border-gray-300 px-3 py-2 text-gray-500">
+                    {idx + 1}
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2 font-medium">
+                    {item.nome}
+                    {item.nomeConvidado && (
+                      <div className="text-xs font-normal text-gray-600">
+                        + convidado: {item.nomeConvidado}
+                      </div>
+                    )}
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2 text-gray-600">
+                    {item.email}
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2 text-gray-600">
+                    {item.telefone ?? '—'}
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2 text-gray-600">
+                    {item.lote?.nome ?? '—'}
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2">
+                    {item.valor > 0 ? `R$ ${item.valor.toFixed(2)}` : 'Grátis'}
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2 text-center">
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 text-xs font-bold ${
+                        item.status === 'confirmado'
+                          ? 'bg-green-200 text-green-800'
+                          : item.status === 'pendente'
+                            ? 'bg-yellow-200 text-yellow-800'
+                            : 'bg-red-200 text-red-800'
+                      }`}
+                    >
+                      {item.status === 'confirmado'
+                        ? 'PAGO'
+                        : item.status === 'pendente'
+                          ? 'PENDENTE'
+                          : 'CANCELADO'}
+                    </span>
+                  </td>
+                  <td className="border border-gray-300 px-3 py-2 text-center print:w-16">
+                    <span className="inline-block h-5 w-5 rounded border-2 border-gray-400" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {filtradas.length === 0 && (
           <p className="mt-4 text-center text-gray-500">

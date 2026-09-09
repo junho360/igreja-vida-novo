@@ -130,7 +130,7 @@ export default function AvaliarEventoPage() {
         <h1 className="text-2xl font-bold text-foreground">Avaliar Evento</h1>
         <p className="text-gray-600 mt-1">{evento.titulo}</p>
 
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-lg border bg-white p-4 text-center">
             <p className="text-xs text-gray-500">Inscritos confirmados</p>
             <p className="text-2xl font-bold text-foreground">

@@ -113,7 +113,7 @@ export default function GaleriaManager({
       <label className="block text-sm font-medium text-gray-700">Galeria</label>
 
       {items.length > 0 && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {items.map((item) => (
             <div
               key={item.id}

@@ -62,9 +62,11 @@ export default function AdminInscricoesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-gray-900">Inscrições</h1>
+          <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
+            Inscrições
+          </h1>
           <span className="flex items-center gap-1 text-xs text-gray-400">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
             Auto-atualizando
@@ -78,7 +80,7 @@ export default function AdminInscricoesPage() {
         </Link>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-6 grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-5">
         <div className="rounded-lg border bg-white p-4 shadow-sm">
           <p className="text-xs text-gray-500 uppercase font-medium">
             Total inscrições
@@ -133,10 +135,10 @@ export default function AdminInscricoesPage() {
               key={evento.id}
               className="rounded-lg border border-gray-200 bg-white shadow-sm"
             >
-              <div className="border-b border-gray-200 px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">
+              <div className="border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <h2 className="text-base font-semibold text-gray-900 truncate sm:text-lg">
                       {evento.titulo}
                     </h2>
                     <p className="text-sm text-gray-500">
@@ -146,7 +148,7 @@ export default function AdminInscricoesPage() {
                       )}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="rounded-full bg-green-100 px-3 py-1 text-green-700 font-medium">
                       {pagas.length} pagas
                     </span>
@@ -166,42 +168,44 @@ export default function AdminInscricoesPage() {
               </div>
 
               {evento.inscricoes.length > 0 ? (
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Nome
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Telefone
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Valor
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Status
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                        Comprovante
-                      </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                        Ações
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {evento.inscricoes.map((item) => (
-                      <InscricaoActions
-                        key={item.id}
-                        item={item}
-                        onStatusChange={fetchData}
-                      />
-                    ))}
-                  </tbody>
-                </table>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase sm:px-6">
+                          Nome
+                        </th>
+                        <th className="hidden px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase sm:table-cell sm:px-6">
+                          Email
+                        </th>
+                        <th className="hidden px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase md:table-cell sm:px-6">
+                          Telefone
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase sm:px-6">
+                          Valor
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase sm:px-6">
+                          Status
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase sm:px-6">
+                          Comprovante
+                        </th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase sm:px-6">
+                          Ações
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {evento.inscricoes.map((item) => (
+                        <InscricaoActions
+                          key={item.id}
+                          item={item}
+                          onStatusChange={fetchData}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <p className="px-6 py-4 text-sm text-gray-500">
                   Nenhuma inscrição.

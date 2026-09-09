@@ -78,7 +78,7 @@ export default function AdminPedidosOracaoPage() {
           placeholder="Buscar..."
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
-          className="ml-auto rounded-md border px-3 py-1.5 text-sm"
+          className="w-full sm:w-auto sm:ml-auto rounded-md border px-3 py-1.5 text-sm"
         />
       </div>
 
