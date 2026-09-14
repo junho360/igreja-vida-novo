@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 
 const menuItems = [
@@ -61,6 +62,13 @@ export default function AdminLayout({
             >
               ← Voltar ao site
             </Link>
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: '/admin/login' })}
+              className="block w-full text-left rounded-md px-3 py-2 text-sm text-red-300 hover:bg-red-900/30 hover:text-red-100 transition-colors"
+            >
+              Sair do painel
+            </button>
           </nav>
         )}
       </header>
@@ -82,10 +90,20 @@ export default function AdminLayout({
             </Link>
           ))}
         </nav>
-        <div className="p-4 border-t border-gray-800">
-          <Link href="/" className="text-sm text-gray-400 hover:text-white">
+        <div className="p-4 border-t border-gray-800 space-y-2">
+          <Link
+            href="/"
+            className="block text-sm text-gray-400 hover:text-white"
+          >
             ← Voltar ao site
           </Link>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            className="block w-full text-left text-sm text-red-300 hover:text-red-100 transition-colors"
+          >
+            Sair do painel
+          </button>
         </div>
       </aside>
 
