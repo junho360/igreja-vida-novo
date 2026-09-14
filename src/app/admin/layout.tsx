@@ -34,14 +34,23 @@ export default function AdminLayout({
           <Link href="/admin" className="font-bold">
             Igreja Vida - Admin
           </Link>
-          <button
-            type="button"
-            onClick={() => setAberto((a) => !a)}
-            className="rounded-md px-2 py-1 text-sm text-gray-300 hover:text-white"
-            aria-expanded={aberto}
-          >
-            {aberto ? '✕ Fechar' : '☰ Menu'}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: '/admin/login' })}
+              className="rounded-md px-2 py-1 text-sm text-red-300 hover:text-red-100"
+            >
+              Sair
+            </button>
+            <button
+              type="button"
+              onClick={() => setAberto((a) => !a)}
+              className="rounded-md px-2 py-1 text-sm text-gray-300 hover:text-white"
+              aria-expanded={aberto}
+            >
+              {aberto ? '✕ Fechar' : '☰ Menu'}
+            </button>
+          </div>
         </div>
         {aberto && (
           <nav className="px-4 pb-4 space-y-1">
@@ -62,22 +71,22 @@ export default function AdminLayout({
             >
               ← Voltar ao site
             </Link>
-            <button
-              type="button"
-              onClick={() => signOut({ callbackUrl: '/admin/login' })}
-              className="block w-full text-left rounded-md px-3 py-2 text-sm text-red-300 hover:bg-red-900/30 hover:text-red-100 transition-colors"
-            >
-              Sair do painel
-            </button>
           </nav>
         )}
       </header>
 
       <aside className="hidden lg:flex w-64 bg-gray-900 text-white flex-col min-h-screen">
-        <div className="p-4 border-b border-gray-800">
+        <div className="p-4 border-b border-gray-800 flex items-center justify-between gap-2">
           <Link href="/admin" className="text-lg font-bold">
             Igreja Vida - Admin
           </Link>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: '/admin/login' })}
+            className="text-sm text-red-300 hover:text-red-100 whitespace-nowrap"
+          >
+            Sair
+          </button>
         </div>
         <nav className="flex-1 p-4 space-y-1">
           {menuItems.map((item) => (
@@ -90,20 +99,13 @@ export default function AdminLayout({
             </Link>
           ))}
         </nav>
-        <div className="p-4 border-t border-gray-800 space-y-2">
+        <div className="p-4 border-t border-gray-800">
           <Link
             href="/"
             className="block text-sm text-gray-400 hover:text-white"
           >
             ← Voltar ao site
           </Link>
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: '/admin/login' })}
-            className="block w-full text-left text-sm text-red-300 hover:text-red-100 transition-colors"
-          >
-            Sair do painel
-          </button>
         </div>
       </aside>
 
