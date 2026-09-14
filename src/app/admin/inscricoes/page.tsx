@@ -12,7 +12,7 @@ interface Inscricao {
   telefone: string | null
   valor: number
   status: string
-  comprovante: string | null
+  temComprovante?: boolean
   createdAt: string
 }
 
@@ -33,9 +33,16 @@ export default function AdminInscricoesPage() {
   }, [])
 
   useEffect(() => {
-    fetchData()
-    const interval = setInterval(fetchData, 20000)
-    return () => clearInterval(interval)
+    const load = () => {
+      if (document.visibilityState === 'visible') fetchData()
+    }
+    load()
+    const interval = setInterval(load, 60000)
+    document.addEventListener('visibilitychange', load)
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', load)
+    }
   }, [fetchData])
 
   const totalInscricoes = eventos.reduce((s, e) => s + e.inscricoes.length, 0)

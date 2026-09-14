@@ -10,7 +10,7 @@ interface InscricaoItem {
   telefone?: string | null
   valor: number
   status: string
-  comprovante?: string | null
+  temComprovante?: boolean
   lote?: { nome: string } | null
   createdAt: string | Date
 }
@@ -80,9 +80,9 @@ export default function InscricaoActions({
         </span>
       </td>
       <td className="px-4 py-4 text-sm sm:px-6">
-        {item.comprovante ? (
+        {item.temComprovante ? (
           <a
-            href={`/api/inscricoes/${item.id}/comprovante`}
+            href={`/api/admin/inscricoes/${item.id}/comprovante`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary hover:underline"
