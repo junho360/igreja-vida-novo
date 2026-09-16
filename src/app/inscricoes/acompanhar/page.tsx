@@ -48,8 +48,15 @@ export default function AcompanharInscricoes() {
 
   useEffect(() => {
     if (inscricoes.length === 0 || !email) return
-    const interval = setInterval(() => fetchInscricoes(email), 15000)
-    return () => clearInterval(interval)
+    const load = () => {
+      if (document.visibilityState === 'visible') fetchInscricoes(email)
+    }
+    const interval = setInterval(load, 60000)
+    document.addEventListener('visibilitychange', load)
+    return () => {
+      clearInterval(interval)
+      document.removeEventListener('visibilitychange', load)
+    }
   }, [inscricoes.length, email, fetchInscricoes])
 
   async function handleSearch(e: React.FormEvent<HTMLFormElement>) {
