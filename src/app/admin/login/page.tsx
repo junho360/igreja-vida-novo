@@ -1,32 +1,44 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
+import { getCsrfToken, signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const enviando = useRef(false)
+
+  useEffect(() => {
+    getCsrfToken().then(() => {})
+  }, [])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (enviando.current) return
+    enviando.current = true
     setError('')
     setLoading(true)
 
     const form = new FormData(e.currentTarget)
-    const result = await signIn('credentials', {
-      email: form.get('email') as string,
-      senha: form.get('senha') as string,
-      redirect: false,
-    })
-
-    setLoading(false)
-
-    if (result?.error) {
-      setError('E-mail ou senha inválidos.')
-    } else {
-      router.push('/admin')
+    try {
+      const result = await signIn('credentials', {
+        email: form.get('email') as string,
+        senha: form.get('senha') as string,
+        redirect: false,
+      })
+      if (result?.error) {
+        setError('E-mail ou senha inválidos.')
+      } else {
+        router.replace('/admin')
+        router.refresh()
+      }
+    } catch {
+      setError('Não foi possível conectar. Tente novamente.')
+    } finally {
+      setLoading(false)
+      enviando.current = false
     }
   }
 
@@ -53,6 +65,7 @@ export default function LoginPage() {
               id="email"
               name="email"
               required
+              autoComplete="username"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
@@ -68,14 +81,20 @@ export default function LoginPage() {
               id="senha"
               name="senha"
               required
+              autoComplete="current-password"
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
+          {loading && (
+            <p className="text-sm text-gray-500">
+              Entrando, aguarde um instante...
+            </p>
+          )}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-primary px-4 py-2 text-white font-semibold hover:bg-primary-light transition-colors disabled:opacity-50"
+            className="w-full rounded-md bg-primary px-4 py-2 text-white font-semibold hover:bg-primary-light transition-colors disabled:opacity-60 cursor-pointer"
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
