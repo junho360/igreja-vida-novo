@@ -210,7 +210,7 @@ export default function AdminMensagensPage() {
                     </div>
                   )}
 
-                  {!msg.respondida && (
+                  {
                     <div className="mt-4">
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Responder
@@ -229,10 +229,12 @@ export default function AdminMensagensPage() {
                       >
                         {enviando === msg.id
                           ? 'Enviando...'
-                          : 'Enviar resposta'}
+                          : msg.respondida
+                            ? 'Reenviar resposta'
+                            : 'Enviar resposta'}
                       </button>
                     </div>
-                  )}
+                  }
 
                   {feedback && feedback.id === msg.id && msg.respondida && (
                     <div className="mt-3 flex flex-wrap gap-2">
