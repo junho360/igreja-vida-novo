@@ -52,9 +52,9 @@ export default function RelatorioEventoPage() {
   }
 
   const filtradas = inscricoes.filter((i) => {
-    if (filtro === 'confirmado' && i.status !== 'confirmado') return false
-    if (filtro === 'pendente' && i.status !== 'pendente') return false
-    return true
+    if (i.status === 'cancelado') return false
+    if (filtro === 'todos') return true
+    return i.status === filtro
   })
 
   const pagas = inscricoes.filter((i) => i.status === 'confirmado')
@@ -88,7 +88,10 @@ export default function RelatorioEventoPage() {
               onChange={(e) => setFiltro(e.target.value as typeof filtro)}
               className="rounded-md border px-3 py-1.5 text-sm"
             >
-              <option value="todos">Todos ({inscricoes.length})</option>
+              <option value="todos">
+                Todos (
+                {inscricoes.filter((i) => i.status !== 'cancelado').length})
+              </option>
               <option value="confirmado">Pagos ({pagas.length})</option>
               <option value="pendente">Pendentes ({pendentes.length})</option>
             </select>
