@@ -261,9 +261,15 @@ export default function InscricaoForm({
         </p>
         {whatsapp && inscricao && (
           <div className="mt-4">
+            {opcao === 'diaria' && diaDiaria && (
+              <p className="mb-2 rounded-md bg-primary/10 p-3 text-sm text-primary-700">
+                Você vai participar no dia:{' '}
+                <strong>{formatDiaDiaria(diaDiaria)}</strong> (Diária)
+              </p>
+            )}
             <WhatsAppButton
               numero={whatsapp}
-              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.\n\nNome: ${form.nome}\nConvidado: ${form.nomeConvidado ? `Sim - ${form.nomeConvidado}` : 'Não'}\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
+              mensagem={`Olá! Acabei de me inscrever no evento e enviar o comprovante de pagamento.${opcao === 'diaria' && diaDiaria ? `\n\nDia da diaria: ${formatDiaDiaria(diaDiaria)}` : ''}\n\nNome: ${form.nome}\nConvidado: ${form.nomeConvidado ? `Sim - ${form.nomeConvidado}` : 'Não'}\nInscrição: ${inscricao.id}\nValor: R$ ${inscricao.valor.toFixed(2)}${opcao === 'diaria' && diaDiaria ? `\nDia: ${formatDiaDiaria(diaDiaria)} (Diária)` : ''}\n\nComprovante: ${window.location.origin}/api/inscricoes/${inscricao.id}/comprovante`}
             />
           </div>
         )}
@@ -402,6 +408,9 @@ export default function InscricaoForm({
             whatsapp={whatsapp}
             nome={form.nome}
             nomeConvidado={form.nomeConvidado}
+            diaDiariaLabel={
+              opcao === 'diaria' && diaDiaria ? formatDiaDiaria(diaDiaria) : ''
+            }
             onComplete={() => setStep('enviado')}
           />
         </div>
@@ -765,12 +774,14 @@ function UploadComprovante({
   whatsapp,
   nome,
   nomeConvidado,
+  diaDiariaLabel,
   onComplete,
 }: {
   inscricaoId: string
   whatsapp?: string
   nome: string
   nomeConvidado?: string
+  diaDiariaLabel?: string
   onComplete: () => void
 }) {
   const [uploading, setUploading] = useState(false)
@@ -906,7 +917,7 @@ function UploadComprovante({
           </p>
           <WhatsAppButton
             numero={whatsapp}
-            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.\n\nNome: ${nome}\nConvidado: ${nomeConvidado ? `Sim - ${nomeConvidado}` : 'Não'}`}
+            mensagem={`Olá! Fiz a inscrição ${inscricaoId} e quero enviar o comprovante de pagamento.${diaDiariaLabel ? `\n\nDia da diaria: ${diaDiariaLabel}` : ''}\n\nNome: ${nome}\nConvidado: ${nomeConvidado ? `Sim - ${nomeConvidado}` : 'Não'}${diaDiariaLabel ? `\nDia (Diária): ${diaDiariaLabel}` : ''}`}
           />
         </div>
       )}
