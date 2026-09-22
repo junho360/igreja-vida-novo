@@ -20,6 +20,7 @@ export async function GET() {
           id: true,
           nome: true,
           nomeConvidado: true,
+          diaDiaria: true,
           email: true,
           telefone: true,
           valor: true,

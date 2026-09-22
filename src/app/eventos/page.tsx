@@ -91,12 +91,21 @@ export default async function EventosPage() {
                   </p>
                 )
               )}
+              {evento.temDiaria && evento.diariaValor != null && (
+                <p className="mt-2 text-sm font-semibold text-primary">
+                  Diária: R$ {evento.diariaValor.toFixed(2)} por dia
+                </p>
+              )}
               <div className="mt-4">
                 <InscricaoForm
                   eventoId={evento.id}
                   valor={evento.valor ?? 0}
                   valorComConvidado={evento.valorComConvidado ?? null}
                   valorSemConvidado={evento.valorSemConvidado ?? null}
+                  temDiaria={evento.temDiaria}
+                  diariaValor={evento.diariaValor ?? null}
+                  dataInicio={evento.data.toISOString()}
+                  dataFim={evento.dataFim?.toISOString() ?? null}
                   nomeIgreja={cfg.nome_igreja}
                   cidade={cfg.cidade}
                   pix={cfg.pix_inscricao || cfg.pix}

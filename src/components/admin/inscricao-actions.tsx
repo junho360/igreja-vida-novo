@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { formatDiaDiariaLong } from '@/lib/dias-diaria'
 
 interface InscricaoItem {
   id: string
   nome: string
   nomeConvidado?: string | null
+  diaDiaria?: string | null
   email: string
   telefone?: string | null
   valor: number
@@ -55,6 +57,11 @@ export default function InscricaoActions({
         {item.nomeConvidado && (
           <span className="block text-xs font-normal text-gray-500">
             + convidado: {item.nomeConvidado}
+          </span>
+        )}
+        {item.diaDiaria && (
+          <span className="block text-xs font-normal text-primary">
+            Diária: {formatDiaDiariaLong(item.diaDiaria)}
           </span>
         )}
       </td>

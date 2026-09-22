@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { listDiasDiaria } from '@/lib/dias-diaria'
 
 export async function POST(request: Request) {
   const body = await request.json()
@@ -23,8 +24,28 @@ export async function POST(request: Request) {
 
   let valor = evento.valor ?? 0
   let loteId: string | null = null
+  const diaDiaria: string | null =
+    typeof body.diaDiaria === 'string' && body.diaDiaria ? body.diaDiaria : null
 
-  if (evento.valorComConvidado != null && evento.valorSemConvidado != null) {
+  if (diaDiaria) {
+    if (!evento.temDiaria || evento.diariaValor == null) {
+      return NextResponse.json(
+        { error: 'Evento não oferece inscrição de diária' },
+        { status: 400 }
+      )
+    }
+    const diasValidos = listDiasDiaria(evento.data, evento.dataFim)
+    if (!diasValidos.includes(diaDiaria)) {
+      return NextResponse.json(
+        { error: 'Dia inválido para a diária' },
+        { status: 400 }
+      )
+    }
+    valor = evento.diariaValor
+  } else if (
+    evento.valorComConvidado != null &&
+    evento.valorSemConvidado != null
+  ) {
     valor =
       body.temConvidado === true
         ? evento.valorComConvidado
@@ -50,6 +71,7 @@ export async function POST(request: Request) {
       email: body.email,
       telefone: body.telefone,
       nomeConvidado: body.nomeConvidado || null,
+      diaDiaria,
       valor,
       eventoId: body.eventoId,
       loteId,

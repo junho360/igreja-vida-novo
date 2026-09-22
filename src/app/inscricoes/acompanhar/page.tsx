@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import WhatsAppButton from '@/components/public/whatsapp-button'
+import { formatDiaDiaria } from '@/lib/dias-diaria'
 
 interface Inscricao {
   id: string
   nome: string
   nomeConvidado?: string | null
+  diaDiaria?: string | null
   email: string
   valor: number
   status: string
@@ -136,6 +138,11 @@ export default function AcompanharInscricoes() {
                   {insc.nomeConvidado && (
                     <p className="mt-0.5 text-xs text-gray-500">
                       + convidado: {insc.nomeConvidado}
+                    </p>
+                  )}
+                  {insc.diaDiaria && (
+                    <p className="mt-0.5 text-xs text-primary font-medium">
+                      Diária: {formatDiaDiaria(insc.diaDiaria)}
                     </p>
                   )}
                   {insc.lote && (

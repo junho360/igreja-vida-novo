@@ -35,6 +35,9 @@ export default function NovoEventoPage() {
         valor: form.get('valor'),
         valorComConvidado: form.get('valorComConvidado'),
         valorSemConvidado: form.get('valorSemConvidado'),
+        temDiaria: form.get('temDiaria') === 'true',
+        diariaValor:
+          form.get('temDiaria') === 'true' ? form.get('diariaValor') : null,
         inscricaoInicio: form.get('inscricaoInicio') || null,
         inscricaoFim: form.get('inscricaoFim') || null,
         dataPlanejamentoInicio: form.get('dataPlanejamentoInicio') || null,
@@ -193,6 +196,38 @@ export default function NovoEventoPage() {
             name="valor"
             step="0.01"
             defaultValue="0"
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="temDiaria"
+            name="temDiaria"
+            value="true"
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label
+            htmlFor="temDiaria"
+            className="ml-2 block text-sm text-gray-700"
+          >
+            Oferecer inscrição de diária (R$ por dia)
+          </label>
+        </div>
+        <div>
+          <label
+            htmlFor="diariaValor"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Valor da diária por dia (R$) - as datas são as do evento
+            (25/09–27/09 etc.)
+          </label>
+          <input
+            type="number"
+            id="diariaValor"
+            name="diariaValor"
+            step="0.01"
+            defaultValue="20"
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>

@@ -25,6 +25,7 @@ export async function GET(request: Request) {
     id: i.id,
     nome: i.nome,
     nomeConvidado: i.nomeConvidado,
+    diaDiaria: i.diaDiaria,
     email: i.email,
     valor: i.valor,
     status: i.status,

@@ -23,6 +23,8 @@ export default function EditarEventoPage() {
     valor: '0',
     valorComConvidado: '0',
     valorSemConvidado: '0',
+    temDiaria: false,
+    diariaValor: '20',
     inscricaoInicio: '',
     inscricaoFim: '',
     dataPlanejamentoInicio: '',
@@ -60,6 +62,8 @@ export default function EditarEventoPage() {
           valor: String(evento.valor ?? 0),
           valorComConvidado: String(evento.valorComConvidado ?? 0),
           valorSemConvidado: String(evento.valorSemConvidado ?? 0),
+          temDiaria: evento.temDiaria ?? false,
+          diariaValor: String(evento.diariaValor ?? 20),
           inscricaoInicio: toLocal(evento.inscricaoInicio),
           inscricaoFim: toLocal(evento.inscricaoFim),
           dataPlanejamentoInicio: evento.dataPlanejamentoInicio
@@ -96,6 +100,8 @@ export default function EditarEventoPage() {
         valor: Number(form.valor) || 0,
         valorComConvidado: Number(form.valorComConvidado) || 0,
         valorSemConvidado: Number(form.valorSemConvidado) || 0,
+        temDiaria: form.temDiaria,
+        diariaValor: form.temDiaria ? Number(form.diariaValor) : null,
         ministerioId: form.ministerioId || null,
         publicado: form.publicado,
       }),
@@ -246,6 +252,38 @@ export default function EditarEventoPage() {
             step="0.01"
             value={form.valor}
             onChange={(e) => setForm({ ...form, valor: e.target.value })}
+            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="temDiaria"
+            checked={form.temDiaria}
+            onChange={(e) => setForm({ ...form, temDiaria: e.target.checked })}
+            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label
+            htmlFor="temDiaria"
+            className="ml-2 block text-sm text-gray-700"
+          >
+            Oferecer inscrição de diária (R$ por dia)
+          </label>
+        </div>
+        <div>
+          <label
+            htmlFor="diariaValor"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Valor da diária por dia (R$) - as datas são as do evento
+            (25/09–27/09 etc.)
+          </label>
+          <input
+            type="number"
+            id="diariaValor"
+            step="0.01"
+            value={form.diariaValor}
+            onChange={(e) => setForm({ ...form, diariaValor: e.target.value })}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>

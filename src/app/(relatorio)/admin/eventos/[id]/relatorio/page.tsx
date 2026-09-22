@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useParams } from 'next/navigation'
+import { formatDiaDiariaLong } from '@/lib/dias-diaria'
 
 interface Inscricao {
   id: string
   nome: string
   nomeConvidado: string | null
+  diaDiaria: string | null
   email: string
   telefone: string | null
   valor: number
@@ -193,6 +195,11 @@ export default function RelatorioEventoPage() {
                     {item.nomeConvidado && (
                       <div className="text-xs font-normal text-gray-600">
                         + convidado: {item.nomeConvidado}
+                      </div>
+                    )}
+                    {item.diaDiaria && (
+                      <div className="text-xs font-normal text-primary">
+                        Diária: {formatDiaDiariaLong(item.diaDiaria)}
                       </div>
                     )}
                   </td>

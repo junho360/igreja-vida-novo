@@ -8,6 +8,7 @@ interface Inscricao {
   id: string
   nome: string
   nomeConvidado: string | null
+  diaDiaria?: string | null
   email: string
   telefone: string | null
   valor: number

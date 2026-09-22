@@ -54,6 +54,11 @@ export async function PUT(
       valorSemConvidado: temConvidado
         ? Number(body.valorSemConvidado) || 0
         : null,
+      temDiaria: body.temDiaria === true || body.temDiaria === 'true',
+      diariaValor:
+        body.temDiaria === true || body.temDiaria === 'true'
+          ? Number(body.diariaValor) || 0
+          : null,
       inscricaoInicio: body.inscricaoInicio
         ? new Date(body.inscricaoInicio)
         : null,

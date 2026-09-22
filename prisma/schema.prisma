@@ -59,6 +59,8 @@ model Evento {
   valor                  Float?
   valorComConvidado      Float?
   valorSemConvidado      Float?
+  temDiaria              Boolean           @default(false)
+  diariaValor            Float?
   publicado              Boolean           @default(false)
   inscricaoInicio        DateTime?
   inscricaoFim           DateTime?
@@ -89,6 +91,7 @@ model Inscricao {
   email             String
   telefone          String?
   nomeConvidado     String?
+  diaDiaria         String?
   valor             Float
   status            String    @default("pendente")
   comprovante       String?
