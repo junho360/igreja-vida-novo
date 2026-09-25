@@ -102,9 +102,15 @@ export default async function HomePage() {
                       ` até ${evento.inscricaoFim.toLocaleDateString('pt-BR')}`}
                   </p>
                 )}
-                <span className="mt-3 inline-block text-sm font-medium text-primary">
-                  Inscreva-se →
-                </span>
+                {evento.inscricaoFim && evento.inscricaoFim <= new Date() ? (
+                  <span className="mt-3 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                    Inscrições encerradas
+                  </span>
+                ) : (
+                  <span className="mt-3 inline-block text-sm font-medium text-primary">
+                    Inscreva-se →
+                  </span>
+                )}
               </Link>
             ))}
           </div>

@@ -22,6 +22,16 @@ export async function POST(request: Request) {
     )
   }
 
+  const agora = new Date()
+  const inicioInscricao = evento.inscricaoInicio
+  const fimInscricao = evento.inscricaoFim ?? evento.data
+  if ((inicioInscricao && agora < inicioInscricao) || agora > fimInscricao) {
+    return NextResponse.json(
+      { error: 'Inscrições encerradas' },
+      { status: 423 }
+    )
+  }
+
   let valor = evento.valor ?? 0
   let loteId: string | null = null
   const diaDiaria: string | null =

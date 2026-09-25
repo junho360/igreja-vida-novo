@@ -93,9 +93,11 @@ export default function InscricaoForm({
   const now = new Date()
   const inicio = inscricaoInicio ? new Date(inscricaoInicio) : null
   const fim = inscricaoFim ? new Date(inscricaoFim) : null
+  const fimEfetivo = fim ?? (dataInicio ? new Date(dataInicio) : null)
 
-  const inscricoesAbertas = (!inicio || now >= inicio) && (!fim || now <= fim)
-  const inscricoesEncerradas = fim && now > fim
+  const inscricoesAbertas =
+    (!inicio || now >= inicio) && (!fimEfetivo || now <= fimEfetivo)
+  const inscricoesEncerradas = fimEfetivo != null && now > fimEfetivo
 
   const pixPayload = useMemo(
     () => generatePixPayload(pix, nomeIgreja, cidade, inscricao?.valor),
@@ -245,6 +247,8 @@ export default function InscricaoForm({
       } else {
         setStep('pix')
       }
+    } else {
+      setErroSelecao(data.error || 'Não foi possível concluir a inscrição.')
     }
     setLoading(false)
   }
@@ -435,10 +439,10 @@ export default function InscricaoForm({
             })}
           </p>
         )}
-        {fim && (
+        {fimEfetivo && (
           <p className="mt-1 text-xs text-gray-500">
-            Encerram: {fim.toLocaleDateString('pt-BR')} às{' '}
-            {fim.toLocaleTimeString('pt-BR', {
+            Encerram: {fimEfetivo.toLocaleDateString('pt-BR')} às{' '}
+            {fimEfetivo.toLocaleTimeString('pt-BR', {
               hour: '2-digit',
               minute: '2-digit',
             })}
