@@ -6,7 +6,7 @@ export default async function HomePage() {
   const [eventos, devocionais, destaques, cfg] = await Promise.all([
     prisma.evento.findMany({
       take: 3,
-      where: { publicado: true, data: { gte: new Date() } },
+      where: { publicado: true },
       orderBy: { data: 'asc' },
       include: { ministerio: true },
     }),
